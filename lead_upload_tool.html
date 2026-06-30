@@ -1,0 +1,2409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeadFlow — IONOS Cloud</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f4f6fb;--surface:#fff;--card:#fff;--border:#e2e6f0;--border2:#cdd2e8;
+  --text:#111827;--text2:#374151;--muted:#6b7280;--dim:#9ca3af;
+  --blue:#003d8f;--blue-m:#1a56c4;--blue-lt:#eef3ff;--blue-md:#d8e4ff;
+  --teal:#0891b2;--teal-lt:#ecfeff;
+  --green:#059669;--green-lt:#ecfdf5;
+  --red:#dc2626;--red-lt:#fef2f2;
+  --amber:#d97706;--amber-lt:#fffbeb;
+  --violet:#7c3aed;--violet-lt:#f5f3ff;
+  --sh1:0 1px 4px rgba(0,0,0,.07);
+  --sh2:0 4px 16px rgba(0,0,0,.08);
+  --jakarta:'Plus Jakarta Sans',sans-serif;
+  --mono:'Spline Sans Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--jakarta);font-size:14px;min-height:100vh}
+
+/* HEADER */
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:0 36px;display:flex;align-items:center;height:60px;gap:0;box-shadow:var(--sh1);position:sticky;top:0;z-index:100}
+.hdr-logo{display:flex;align-items:center;height:100%;border-right:1px solid var(--border);padding-right:22px;margin-right:22px}
+.hdr-logo img{height:26px;width:auto}
+.hdr-brand-name{font-size:17px;font-weight:700;color:var(--blue);letter-spacing:-.02em}
+.hdr-brand-sub{font-size:10px;color:var(--dim);font-weight:400;letter-spacing:.05em;text-transform:uppercase;margin-top:1px}
+.hdr-spacer{flex:1}
+.hdr-file{font-size:11px;font-family:var(--mono);color:var(--dim);background:var(--bg);border:1px solid var(--border);padding:5px 12px;border-radius:6px}
+
+/* STEPS */
+.steps{background:var(--surface);border-bottom:1px solid var(--border);padding:0 36px;display:flex;align-items:center;height:46px;gap:2px}
+.step{display:flex;align-items:center;gap:8px;padding:0 14px;height:100%;font-size:12px;font-weight:500;color:var(--dim);position:relative;white-space:nowrap}
+.step::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:transparent;transition:background .2s}
+.step.active{color:var(--blue);font-weight:600}
+.step.active::after{background:var(--blue)}
+.step.done{color:var(--green)}
+.step.done::after{background:var(--green)}
+.step-n{width:20px;height:20px;border-radius:50%;background:var(--bg);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;transition:all .2s}
+.step.active .step-n{background:var(--blue);color:#fff;border-color:var(--blue)}
+.step.done .step-n{background:var(--green);color:#fff;border-color:var(--green)}
+.step-sep{color:var(--border2);font-size:14px;padding:0 2px}
+
+/* MAIN */
+main{max-width:1060px;margin:0 auto;padding:40px 36px}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+main>*{animation:up .35s ease both}
+main>*:nth-child(2){animation-delay:.07s}
+main>*:nth-child(3){animation-delay:.14s}
+
+/* UPLOAD */
+.hero{text-align:center;padding:16px 0 40px}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--blue-lt);border:1px solid var(--blue-md);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;color:var(--blue-m);letter-spacing:.04em;text-transform:uppercase;margin-bottom:20px}
+.hero h1{font-size:38px;font-weight:700;letter-spacing:-.03em;line-height:1.15;margin-bottom:12px}
+.hero h1 span{color:var(--blue-m)}
+.hero p{font-size:15px;color:var(--muted);font-weight:300;max-width:440px;margin:0 auto;line-height:1.7}
+.upload-zone{background:var(--surface);border:2px dashed var(--border2);border-radius:16px;padding:52px 40px;text-align:center;cursor:pointer;transition:all .25s;box-shadow:var(--sh1);position:relative;overflow:hidden}
+.upload-zone::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 110%,rgba(0,61,143,.04),transparent 70%);pointer-events:none}
+.upload-zone:hover{border-color:var(--blue-m);box-shadow:var(--sh2);transform:translateY(-2px)}
+.upload-zone.drag{border-color:var(--blue);background:var(--blue-lt)}
+.upload-icon{width:68px;height:68px;border-radius:16px;background:linear-gradient(135deg,var(--blue-lt),var(--blue-md));border:1px solid var(--blue-md);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 20px;box-shadow:0 4px 14px rgba(0,61,143,.1);transition:transform .3s}
+.upload-zone:hover .upload-icon{transform:scale(1.06) rotate(-3deg)}
+.upload-zone h2{font-size:21px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+.upload-zone p{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6}
+.fmt-row{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-bottom:26px}
+.fmt{background:var(--bg);border:1px solid var(--border);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;color:var(--muted)}
+#file-input{display:none}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+.feat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--sh1);transition:box-shadow .2s,transform .2s}
+.feat:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
+.feat-title{font-weight:600;font-size:14px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.feat-desc{font-size:12px;color:var(--muted);line-height:1.6;font-weight:300}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border:none;cursor:pointer;font-family:var(--jakarta);font-size:13px;font-weight:600;border-radius:8px;transition:all .18s}
+.btn-primary{background:var(--blue);color:#fff;box-shadow:0 2px 8px rgba(0,61,143,.2)}
+.btn-primary:hover{background:var(--blue-m);transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,61,143,.28)}
+.btn-primary:disabled{background:var(--border2);color:var(--dim);cursor:not-allowed;transform:none;box-shadow:none}
+.btn-ghost{background:var(--surface);color:var(--text2);border:1px solid var(--border2)}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-lt)}
+.btn-export{background:var(--blue);color:#fff;font-size:14px;padding:12px 28px;box-shadow:0 4px 14px rgba(0,61,143,.25)}
+.btn-export:hover{background:var(--blue-m);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,61,143,.3)}
+.btn-export:disabled{background:var(--border2);color:var(--dim);cursor:not-allowed;transform:none;box-shadow:none}
+.btn-sm{padding:6px 14px;font-size:12px}
+.btn-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:22px}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:26px;margin-bottom:18px;box-shadow:var(--sh1)}
+.card-ttl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.card-ttl::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ALERTS */
+.alert{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:14px;line-height:1.5;border-left:3px solid}
+.a-ok{background:var(--green-lt);border-color:var(--green);color:#065f46}
+.a-err{background:var(--red-lt);border-color:var(--red);color:#991b1b}
+.a-warn{background:var(--amber-lt);border-color:var(--amber);color:#92400e}
+.a-info{background:var(--blue-lt);border-color:var(--blue-m);color:var(--blue)}
+.alert b{font-weight:600}
+
+/* MAP TABLE */
+.map-tbl{width:100%;border-collapse:collapse}
+.map-tbl th{padding:9px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid var(--border);background:var(--bg)}
+.map-tbl td{padding:7px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+.map-tbl tr:last-child td{border-bottom:none}
+.map-tbl tr:hover td{background:var(--bg)}
+.raw-pill{background:var(--bg);border:1px solid var(--border);padding:3px 9px;border-radius:5px;font-family:var(--mono);font-size:11px;display:inline-block;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sval{font-size:11px;color:var(--dim);font-family:var(--mono);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.arrow{color:var(--border2);text-align:center;width:24px;font-size:16px}
+.mbadge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.05em;text-transform:uppercase;margin-left:6px}
+.mbadge-d{background:var(--green-lt);color:var(--green);border:1px solid #a7f3d0}
+.mbadge-a{background:var(--blue-lt);color:var(--blue-m);border:1px solid var(--blue-md)}
+
+/* FORM */
+select,input[type=text]{background:var(--surface);border:1px solid var(--border2);color:var(--text);padding:9px 12px;font-family:var(--jakarta);font-size:13px;border-radius:8px;outline:none;width:100%;transition:border-color .18s,box-shadow .18s;-webkit-appearance:none}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+select:focus,input[type=text]:focus{border-color:var(--blue-m);box-shadow:0 0 0 3px rgba(26,86,196,.1)}
+.ro{background:var(--bg);border-color:var(--border);color:var(--muted);cursor:default}
+.ro:focus{border-color:var(--border);box-shadow:none}
+.fg{display:flex;flex-direction:column;gap:5px}
+.flbl{font-size:11px;font-weight:600;color:var(--text2);display:flex;align-items:center;gap:6px}
+.tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.05em;text-transform:uppercase}
+.t-req{background:var(--red-lt);color:var(--red);border:1px solid #fecaca}
+.t-auto{background:var(--teal-lt);color:var(--teal);border:1px solid #a5f3fc}
+.t-opt{background:var(--bg);color:var(--dim);border:1px solid var(--border)}
+.fhint{font-size:11px;color:var(--dim);font-weight:400}
+.fg.mand .flbl{color:var(--red)}
+.fg.mand select,.fg.mand input:not(.ro){border-color:#fca5a5}
+.fg.mand select:focus,.fg.mand input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(220,38,38,.1)}
+
+/* SECTION DIVIDER */
+.sdiv{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);margin:26px 0 14px;display:flex;align-items:center;gap:10px}
+.sdiv::before{content:'';width:3px;height:14px;background:var(--blue);border-radius:2px;flex-shrink:0}
+.sdiv::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
+
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 16px;box-shadow:var(--sh1)}
+.stat-v{font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1;margin-bottom:4px}
+.stat-l{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--dim)}
+.stat.blue .stat-v{color:var(--blue)}
+.stat.green .stat-v{color:var(--green)}
+.stat.red .stat-v{color:var(--red)}
+.stat.amber .stat-v{color:var(--amber)}
+
+/* PREVIEW */
+.prev-wrap{overflow:auto;border:1px solid var(--border);border-radius:8px;max-height:420px;min-height:120px;background:var(--surface)}
+.prev-wrap::-webkit-scrollbar{width:5px;height:5px}
+.prev-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+table.prev{width:100%;border-collapse:collapse;font-size:12px}
+table.prev thead{background:var(--bg);position:sticky;top:0;z-index:2}
+table.prev th{padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
+table.prev th.req{color:var(--red)}
+table.prev td{padding:7px 14px;border-bottom:1px solid var(--border);white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis;font-family:var(--mono);font-size:11px}
+table.prev tr:hover td{background:var(--bg)}
+table.prev tr.rem td{opacity:.3;text-decoration:line-through}
+.prev tr.dup-row td:first-child{border-left:3px solid var(--violet)}
+.prev tr.noemail-row td:first-child{border-left:3px solid var(--red)}
+table.prev tr.rem td:first-child{text-decoration:none;opacity:1}
+.c-miss{color:var(--red);font-style:italic;font-family:var(--jakarta)}
+.c-auto{color:var(--teal)}
+.c-map{color:var(--blue-m)}
+.c-empty{color:var(--border2)}
+.tdup{font-size:9px;background:var(--violet-lt);color:var(--violet);padding:2px 7px;border-radius:4px;font-weight:700}
+.tne{font-size:9px;background:var(--red-lt);color:var(--red);padding:2px 7px;border-radius:4px;font-weight:700}
+.tok{font-size:9px;background:var(--green-lt);color:var(--green);padding:2px 7px;border-radius:4px;font-weight:700}
+.leg{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.leg-i{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);font-weight:500}
+.leg-d{width:8px;height:8px;border-radius:50%}
+.pmeta{font-size:11px;color:var(--dim);font-weight:400;text-transform:none;letter-spacing:0}
+
+/* AI BAR */
+.ai-bar{background:var(--violet-lt);border:1px solid #ddd6fe;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:var(--violet);display:none;align-items:center;gap:10px}
+.spinner{width:14px;height:14px;border:2px solid #ddd6fe;border-top-color:var(--violet);border-radius:50%;animation:spin .6s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+#export-block-msg{font-size:11px;color:var(--red);font-weight:500}
+/* Hide upload hero/features on non-upload steps */
+#s2 ~ * .hero, #s3 ~ * .hero, #s4 ~ * .hero { display:none!important; }
+#toast{position:fixed;bottom:24px;right:24px;background:var(--blue);color:#fff;padding:13px 20px;border-radius:10px;font-size:13px;font-weight:600;transform:translateY(70px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);z-index:999;box-shadow:0 10px 32px rgba(0,61,143,.3)}
+#toast.show{transform:translateY(0);opacity:1}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-logo">
+    <img src="https://resources.ionos.com/hubfs/IONOS_Cloud/logos/ionos-cloud-logo-dark.png" alt="IONOS Cloud"
+         onerror="this.outerHTML='<span style=\'font-weight:700;font-size:15px;color:var(--blue)\'>IONOS Cloud</span>'">
+  </div>
+  <div>
+    <div class="hdr-brand-name">LeadFlow</div>
+    <div class="hdr-brand-sub">HubSpot Upload Pipeline</div>
+  </div>
+  <div class="hdr-spacer"></div>
+  <div class="hdr-file" id="header-file">No file loaded</div>
+</header>
+
+<div class="steps">
+  <div class="step active" id="step-1"><div class="step-n">1</div>Upload</div>
+  <div class="step-sep">›</div>
+  <div class="step" id="step-2"><div class="step-n">2</div>Map Columns</div>
+  <div class="step-sep">›</div>
+  <div class="step" id="step-3"><div class="step-n">3</div>Event Settings</div>
+  <div class="step-sep">›</div>
+  <div class="step" id="step-4"><div class="step-n">4</div>Preview & Export</div>
+  <div class="step-sep">›</div>
+  <div class="step" id="step-5"><div class="step-n">5</div>Upload to HubSpot</div>
+</div>
+
+
+<!-- S1 -->
+<div id="s1">
+
+  <div class="upload-zone" id="upload-zone">
+    <div class="upload-icon">📂</div>
+    <h2>Drop your file here</h2>
+    <div class="fmt-row">
+      <span class="fmt">.CSV</span><span class="fmt">.XLSX</span><span class="fmt">.XLS</span>
+      <span class="fmt">GoToWebinar</span><span class="fmt">CMX</span>
+      <span class="fmt">Cognism</span><span class="fmt">Eventbrite</span><span class="fmt">Zoom</span>
+    </div>
+    <input type="file" id="file-input" accept=".csv,.xlsx,.xls"
+      style="
+        display:block;
+        margin:0 auto;
+        padding:10px 16px;
+        font-family:var(--jakarta);
+        font-size:13px;
+        cursor:pointer;
+        border:1px solid var(--border2);
+        border-radius:8px;
+        background:var(--blue);
+        color:#fff;
+        width:auto;
+      ">
+
+  </div>
+</div>
+
+<!-- S2 -->
+<div id="s2" style="display:none">
+  <div class="card">
+    <div class="card-ttl">Column Mapping</div>
+    <div id="map-info" class="alert a-ok"></div>
+    <div id="addr-hint" class="alert a-info" style="display:none"></div>
+    <table class="map-tbl">
+      <thead><tr><th>Raw Column</th><th class="arrow"></th><th>HubSpot Field</th><th>Sample Value</th></tr></thead>
+      <tbody id="map-tbody"></tbody>
+    </table>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="goStep3()">Event Settings →</button>
+    <button class="btn btn-ghost" onclick="resetTool()">← Start Over</button>
+  </div>
+</div>
+
+<!-- S3 -->
+<div id="s3" style="display:none">
+  <div class="card">
+    <div class="card-ttl">Event Settings</div>
+
+    <div class="sdiv">Event Identity</div>
+    <div class="g3">
+      <div class="fg mand">
+        <div class="flbl">Event Name <span class="tag t-req">Required</span></div>
+        <input type="text" id="ev-name" placeholder="e.g. Dockers Webinar" oninput="autoGenerate()">
+      </div>
+      <div class="fg mand">
+        <div class="flbl">Event Date <span class="tag t-req">Required</span></div>
+        <input type="text" id="ev-mmyyyy" placeholder="052026 or 21052026" oninput="autoGenerate()">
+        <div class="fhint">MMYYYY or DDMMYYYY</div>
+      </div>
+      <div class="fg">
+        <div class="flbl">Event Country</div>
+        <select id="ev-ctry" onchange="autoGenerate()">
+          <option value="DE">DE</option><option value="ES">ES</option>
+          <option value="GB">GB</option><option value="UK">UK</option>
+          <option value="US">US</option><option value="FR">FR</option>
+          <option value="AT">AT</option><option value="MX">MX</option>
+          <option value="IT">IT</option><option value="NL">NL</option>
+          <option value="BE">BE</option><option value="PT">PT</option>
+          <option value="CA">CA</option><option value="MT">MT</option>
+          <option value="PL">PL</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sdiv">Source & Channel</div>
+    <div class="g3">
+      <div class="fg mand">
+        <div class="flbl">ionos_source <span class="tag t-req">Required</span></div>
+        <select id="ev-src" onchange="onSourceChange()">
+          <option value="">— select —</option>
+          <option>SEA-Brand</option><option>SEA-Brand Generic</option><option>SEA-Generic</option>
+          <option>Display</option><option>Lead Paid</option><option>Social</option>
+          <option>Affiliates</option><option>Mailing</option><option>Partners</option>
+          <option>Print</option><option>Traffic Organic</option><option>Referral IONOS</option>
+          <option>Traffic Paid</option><option>Webinar</option><option>External Address</option>
+          <option>Event</option><option>Referral</option><option>Lead</option>
+          <option>Personal Network</option><option>Paid Mailing</option>
+        </select>
+      </div>
+      <div class="fg">
+        <div class="flbl">itc_channel</div>
+        <input type="text" id="ev-itc-ch" class="ro" readonly>
+      </div>
+      <div class="fg mand">
+        <div class="flbl">acquisition_method <span class="tag t-req">Required</span></div>
+        <select id="ev-acqm">
+          <option value="">— select —</option>
+          <option>Contact Form</option><option>Content Download</option>
+          <option>Cold Call</option><option>Webform</option><option>Phone</option>
+          <option>Email</option><option>Webinar</option><option>Signup Form</option>
+          <option>Event Invite</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sdiv">Auto-generated Fields</div>
+    <div class="g2">
+      <div class="fg">
+        <div class="flbl">ionos_recently_requested_content_label</div>
+        <input type="text" id="gen-label" class="ro" readonly>
+      </div>
+      <div class="fg">
+        <div class="flbl">recently_requested_content_url <span class="tag t-opt">Optional</span></div>
+        <input type="text" id="ev-url" placeholder="https://...">
+      </div>
+      <div class="fg">
+        <div class="flbl">lead_source_ext</div>
+        <input type="text" id="gen-lse" class="ro" readonly>
+      </div>
+      <div class="fg">
+        <div class="flbl">acquisition_method_ext_new</div>
+        <input type="text" id="gen-amen" class="ro" readonly>
+      </div>
+      <div class="fg">
+        <div class="flbl">utm_campaign <span class="tag t-opt">Paste from UTM builder</span></div>
+        <input type="text" id="gen-utm" placeholder="Paste from your UTM builder sheet">
+      </div>
+      <div class="fg mand">
+        <div class="flbl">itc_campaign <span class="tag t-req">Required</span></div>
+        <input type="text" id="ev-itc-camp" placeholder="e.g. 8O25F3F">
+        <div class="fhint">Get from TACOS per event</div>
+      </div>
+    </div>
+
+    <div class="sdiv">Fixed Fields</div>
+    <div class="g4">
+      <div class="fg mand">
+        <div class="flbl">salesforce_status <span class="tag t-opt">Default if not in file</span></div>
+        <select id="ev-sf">
+          <option value="">— no default —</option>
+          <option>Raw</option><option>MQL</option><option>In Progress (Open)</option>
+          <option>Invalid Contact Information</option><option>Dead / Do Not Contact</option>
+          <option>Nurture (Marketing)</option><option>Prospect</option>
+        </select>
+      </div>
+      <div class="fg">
+        <div class="flbl">itc_product</div>
+        <input type="text" value="HUKYUQ" class="ro" readonly>
+      </div>
+      <div class="fg">
+        <div class="flbl">confirmed_opt_in_location_wf &amp; cloud_confirmed_opt_in_date
+          <label style="margin-left:10px;font-weight:400;font-size:11px;cursor:pointer;color:var(--muted)">
+            <input type="checkbox" id="skip-doi" onclick="document.getElementById('doi-wrap').style.display=this.checked?'none':'block'">
+            Skip (no opt-in)
+          </label>
+        </div>
+        <div id="doi-wrap">
+        <select id="ev-doi-loc">
+          <option value="">— select —</option>
+          <option>Signup / Trial Form</option><option>Download Form</option>
+          <option>Contact Form</option><option>Event</option><option>Webinar</option>
+          <option>Telemarketing</option><option>IONOS CORE</option><option>Newsflash</option>
+          <option>Cognism LeadGen</option><option>Telesales Gipfelsturm</option>
+          <option>Telsesales NetMedia</option><option>Telesales Compris</option>
+          <option>Telemarketing IDG</option>
+          <option>Marketing Consent for non-DOI countries</option>
+        </select>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="flbl">hubspot_owner_id <span class="tag t-opt">Default if not in file</span></div>
+        <input type="text" id="ev-owner-search" placeholder="Search owner name..." 
+          style="margin-bottom:4px"
+          oninput="filterOwners(this.value)">
+        <select id="ev-owner" size="1" style="display:block">
+          <option value="">-- select owner --</option>
+          <option value="830627960">Hubspot (830627960)</option>
+          <option value="899461727">Legacy User (899461727)</option>
+          <option value="726595367">Inactive User (726595367)</option>
+          <option value="694828289">HCP Integration User (694828289)</option>
+          <option value="813706892">Snowflake Integration User (813706892)</option>
+          <option value="791063840">Insights Integration (791063840)</option>
+          <option value="371899117">Achim Weiss (371899117)</option>
+          <option value="133606843">Agon Berisha (133606843)</option>
+          <option value="1029695499">Alberto Fernandez Diaz de Lope Diaz (1029695499)</option>
+          <option value="706090056">Alessandro Izzo (706090056)</option>
+          <option value="623237010">Alina Sandler (623237010)</option>
+          <option value="908300961">Alison Meusburger (908300961)</option>
+          <option value="29221293">Amira Elkanawati (29221293)</option>
+          <option value="66361351">Andreas Mayer (66361351)</option>
+          <option value="206428141">Andreas Nauerz (206428141)</option>
+          <option value="152405361">Angelique Blanchemaison-Chevallier (152405361)</option>
+          <option value="473137944">Ankit Rawat (473137944)</option>
+          <option value="30756142">Anna Bruske-Szypowska (30756142)</option>
+          <option value="447842294">Anna Marie Wintrich (447842294)</option>
+          <option value="449172961">Anthony Colasante (449172961)</option>
+          <option value="52932981">Arthur Mai (52932981)</option>
+          <option value="1368843006">Barbara Mairbaurl (1368843006)</option>
+          <option value="893919111">Begum Yildiz (893919111)</option>
+          <option value="568516289">Belin Colak (568516289)</option>
+          <option value="904787312">Benedikt Harlacher (904787312)</option>
+          <option value="65754406">Benjamin Heil (65754406)</option>
+          <option value="971236818">Benjamin Schmidt (971236818)</option>
+          <option value="810704164">Buddy Miller (810704164)</option>
+          <option value="698081377">Carl Grone (698081377)</option>
+          <option value="670603610">Carlos Garcia Moreno (670603610)</option>
+          <option value="192440652">Christian Trocchi (192440652)</option>
+          <option value="1026237918">Claire Lock (1026237918)</option>
+          <option value="681099797">Constantin Steppeler (681099797)</option>
+          <option value="522678013">Daniel Benad (522678013)</option>
+          <option value="1293072708">Daniel Ceravolo (1293072708)</option>
+          <option value="742312214">Daniel Storch (742312214)</option>
+          <option value="1245852873">Dimitri Matveev (1245852873)</option>
+          <option value="156659751">Dominik Maier (156659751)</option>
+          <option value="33295166">Duru Ertan (33295166)</option>
+          <option value="168951082">Eduardo Oroz Bueno (168951082)</option>
+          <option value="649841262">Emil Hentschel (649841262)</option>
+          <option value="964092607">Emily Raidt (964092607)</option>
+          <option value="49974469">Erwan Le Fraillec (49974469)</option>
+          <option value="212167744">Fabrice Wurtz (212167744)</option>
+          <option value="21306223">Fernando Fuentes Fernando (21306223)</option>
+          <option value="781450369">Fernando Sanchez Garcia (781450369)</option>
+          <option value="858468996">Filiz Akin (858468996)</option>
+          <option value="1004638618">Florim Arifi (1004638618)</option>
+          <option value="29284347">Franck Brucker (29284347)</option>
+          <option value="554816105">Frank Dorrstein (554816105)</option>
+          <option value="606188405">Gabrielle Balleyguier (606188405)</option>
+          <option value="1364537754">Georgina Dallas (1364537754)</option>
+          <option value="793323825">Guillermo Arana Arroyo (793323825)</option>
+          <option value="1338632020">Guillermo Rodriguez Ovejero (1338632020)</option>
+          <option value="694828289">HCP Integration User (694828289)</option>
+          <option value="510604890">Hector Broseta Largo (510604890)</option>
+          <option value="29150589">Hubert Trepkowski (29150589)</option>
+          <option value="709728108">Hussein Zaki (709728108)</option>
+          <option value="1128895023">Isabel del Rio Suberviola (1128895023)</option>
+          <option value="1096548995">Jakob Mangel (1096548995)</option>
+          <option value="289892217">Jan Behrens (289892217)</option>
+          <option value="969957623">Jan Schruf (969957623)</option>
+          <option value="502846540">Javier Palomino Diaz (502846540)</option>
+          <option value="294433420">Jens Reich (294433420)</option>
+          <option value="597124352">Joao Bule (597124352)</option>
+          <option value="752093465">Joerg Walther (752093465)</option>
+          <option value="29798223">Jorg Michael Thalmann (29798223)</option>
+          <option value="674084490">Julia Hahn (674084490)</option>
+          <option value="670468813">Julian Stimpfl (670468813)</option>
+          <option value="714630711">Kaan Gursoy (714630711)</option>
+          <option value="1314529256">Kelly DiGirolamo (1314529256)</option>
+          <option value="1058177498">Kim Bishop (1058177498)</option>
+          <option value="29798222">Kristina Halbekath (29798222)</option>
+          <option value="300402818">Lawrence Jackson (300402818)</option>
+          <option value="78017922">Magnus Philipp (78017922)</option>
+          <option value="1226841231">Marc Moderegger (1226841231)</option>
+          <option value="513614787">Marcella Alves (513614787)</option>
+          <option value="1263096140">Marcos Andres Bueno Martin (1263096140)</option>
+          <option value="779463239">Marina Kogel (779463239)</option>
+          <option value="683760711">Mario Kohler (683760711)</option>
+          <option value="71348886">Marion Hahn (71348886)</option>
+          <option value="685381607">Marisa Corcuera San Martin (685381607)</option>
+          <option value="972496512">Martin Baumhaus (972496512)</option>
+          <option value="294307319">Marvin Holzer (294307319)</option>
+          <option value="451851711">Mayur Choudhari (451851711)</option>
+          <option value="566960939">Melina Gillard (566960939)</option>
+          <option value="32099260">Merve Gozde Canli (32099260)</option>
+          <option value="525683498">Methun Anandavallipuram (525683498)</option>
+          <option value="1278943253">Michael Klos (1278943253)</option>
+          <option value="290546678">Miguel Castanos Zazo (290546678)</option>
+          <option value="29354631">Miriam Bustillo de la Pena (29354631)</option>
+          <option value="381178526">Mohamed Mansour (381178526)</option>
+          <option value="1260172526">Murat Gundogdu (1260172526)</option>
+          <option value="849886290">Nico Saborowski (849886290)</option>
+          <option value="981326601">Nico Saborowski (981326601)</option>
+          <option value="78563806">Nour Hussein (78563806)</option>
+          <option value="211661984">Oliver Kauert (211661984)</option>
+          <option value="1356380011">Patrick Plante (1356380011)</option>
+          <option value="166693595">Paul McCutcheon (166693595)</option>
+          <option value="960421355">Phillip Maasberg (960421355)</option>
+          <option value="193546365">Piyush Jain (193546365)</option>
+          <option value="608694382">Rainer Weissert (608694382)</option>
+          <option value="986482789">Ray Farid (986482789)</option>
+          <option value="282854680">Robert Oliver (282854680)</option>
+          <option value="774384957">Ronny Werner (774384957)</option>
+          <option value="505750998">Sabine Rosemann (505750998)</option>
+          <option value="565469488">Sebastian Albrecht (565469488)</option>
+          <option value="29679807">Sebastian Mews (29679807)</option>
+          <option value="84829228">Selah Stivers (84829228)</option>
+          <option value="862532696">Seth Helgesen (862532696)</option>
+          <option value="465084987">Silke Reker-Reid (465084987)</option>
+          <option value="609183548">Stefan Corvers (609183548)</option>
+          <option value="226428787">Stefan Erkeling (226428787)</option>
+          <option value="613296447">Stephan Hartig (613296447)</option>
+          <option value="1180908176">Susana Perez Lizuain (1180908176)</option>
+          <option value="609377080">Tatjana Rudolph (609377080)</option>
+          <option value="246666676">Thac Nguyen (246666676)</option>
+          <option value="1205360897">Thomas Brown (1205360897)</option>
+          <option value="284537447">Thomas Lehner (284537447)</option>
+          <option value="949503749">Tim Kartali (949503749)</option>
+          <option value="797816625">Tim Rogait (797816625)</option>
+          <option value="1244888148">Tobias Hoffmann (1244888148)</option>
+          <option value="722297304">Tobias Waldmann (722297304)</option>
+          <option value="1133117222">Vladimir Mazurier (1133117222)</option>
+          <option value="334777039">Wided Jamil (334777039)</option>
+          <option value="1036212714">Xenia Maier (1036212714)</option>
+          <option value="401778980">Xenia Ofner (401778980)</option>
+          <option value="368947314">Yassa Suleman (368947314)</option>
+          <option value="1037063808">Zachary Watson (1037063808)</option>
+          <option value="29191377">isabel ortiz (29191377)</option>
+        </select>
+        <div class="fhint">Leave empty if owner is mapped per-row in your file</div>
+      </div>
+      <div class="fg">
+        <div class="flbl">interested_in_product_area</div>
+        <input type="text" value="Cloud" class="ro" readonly>
+      </div>
+      <div class="fg">
+        <div class="flbl">ionos_score <span class="tag t-opt">Default per row</span></div>
+        <select id="ev-score">
+          <option value="">— no default —</option>
+          <option>Cold</option><option>Warm</option>
+          <option>Hot</option><option>Super hot</option><option>Super Cold</option>
+        </select>
+      </div>
+      <div class="fg">
+        <div class="flbl">event_participation <span class="tag t-opt">Default per row</span></div>
+        <select id="ev-part">
+          <option value="">— no default —</option>
+          <option>Attended</option><option>No Show</option><option>Cancelled</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="goStep4()">Preview & Export →</button>
+    <button class="btn btn-ghost" onclick="showStep(2)">← Back</button>
+  </div>
+</div>
+
+<!-- S4 -->
+<div id="s4" style="display:none">
+  <div class="ai-bar" id="ai-bar"><span class="spinner"></span><span id="ai-msg"></span></div>
+  <div class="stats">
+    <div class="stat blue"> <div class="stat-v" id="st-total">0</div>  <div class="stat-l">Total rows</div></div>
+    <div class="stat green"><div class="stat-v" id="st-export">0</div> <div class="stat-l">Will export</div></div>
+    <div class="stat red">  <div class="stat-v" id="st-dups">0</div>   <div class="stat-l">Duplicates</div></div>
+    <div class="stat red">  <div class="stat-v" id="st-noemail">0</div><div class="stat-l">No email</div></div>
+    <div class="stat amber"> <div class="stat-v" id="st-phones">0</div> <div class="stat-l">Phones fixed</div></div>
+  </div>
+  <div id="issues-container"></div>
+  <div class="card">
+    <div class="card-ttl">Data Preview <span class="pmeta" id="prev-badge"></span></div>
+    <div class="leg">
+      <div class="leg-i"><div class="leg-d" style="background:var(--teal)"></div>Auto-filled</div>
+      <div class="leg-i"><div class="leg-d" style="background:var(--blue-m)"></div>Converted</div>
+      <div class="leg-i"><div class="leg-d" style="background:var(--red)"></div>Missing mandatory</div>
+    </div>
+    <div class="prev-wrap"><table class="prev" id="preview-table"><tbody><tr><td style="padding:40px;text-align:center;color:var(--muted)">Processing data…</td></tr></tbody></table></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-export" id="btn-export">⬇ Export CSV + XLSX</button>
+    <button class="btn btn-ghost" onclick="showStep(3)">← Back to Settings</button>
+    <button class="btn btn-ghost" onclick="resetTool()">Start Over</button>
+    <span id="export-block-msg"></span>
+  </div>
+</div>
+
+<!-- S5 -->
+<div id="s5" style="display:none">
+
+  <div class="card">
+    <div class="card-ttl">Upload to HubSpot</div>
+
+    <!-- API Key input -->
+    <div id="hs-api-section">
+
+      <!-- CORS warning - shown if file:// detected -->
+      <div id="hs-cors-warning" class="alert a-warn" style="display:none;margin-bottom:16px">
+        <b>⚠ Running as a local file — API calls may be blocked by the browser.</b><br>
+        To enable direct HubSpot upload, serve this file via a local web server:<br>
+        <code style="background:var(--surface);padding:4px 8px;border-radius:4px;font-family:var(--mono);font-size:11px;display:inline-block;margin-top:6px">python3 -m http.server 8080</code>
+         then open  
+        <code style="background:var(--surface);padding:4px 8px;border-radius:4px;font-family:var(--mono);font-size:11px">http://localhost:8080/lead_upload_tool.html</code>
+        <br><span style="opacity:.8;font-size:11px">Or use the <b>Download CSV</b> button below and import manually.</span>
+      </div>
+
+      <div class="alert a-info" style="margin-bottom:20px">
+        Enter your HubSpot Private App token. It is used only for this session and never stored permanently.
+      </div>
+      <div class="g2" style="margin-bottom:16px">
+        <div class="fg">
+          <div class="flbl">HubSpot Private App Token <span class="tag t-req">Required</span></div>
+          <input type="password" id="hs-api-key" style="font-family:var(--mono);font-size:13px" oninput="resetConnectionTest();localStorage.setItem('lf_hs_token',this.value)">
+          <div class="fhint">Pre-filled with team token. Change only if needed.</div>
+        </div>
+        <div class="fg">
+          <div class="flbl">Import / List Name</div>
+          <input type="text" id="hs-import-name" style="font-family:var(--mono);font-size:12px">
+          <div class="fhint">Auto-generated — edit if needed</div>
+        </div>
+      </div>
+      <div style="margin-bottom:20px;display:flex;align-items:center;gap:12px">
+        <button class="btn btn-ghost btn-sm" onclick="testHubSpotConnection()">🔌 Test Connection</button>
+        <span id="hs-test-result" style="font-size:12px;font-family:var(--mono)"></span>
+      </div>
+
+      <div class="sdiv">Do Not Overwrite Fields</div>
+      <div style="background:var(--amber-lt);border:1px solid #fde68a;border-radius:8px;padding:14px 18px;margin-bottom:20px">
+        <div style="font-size:12px;color:var(--amber);font-weight:600;margin-bottom:8px">These fields will NOT be overwritten on existing contacts:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span style="background:var(--surface);border:1px solid #fde68a;border-radius:4px;padding:3px 10px;font-size:11px;font-family:var(--mono);color:var(--amber)">hubspot_owner_id</span>
+          <span style="background:var(--surface);border:1px solid #fde68a;border-radius:4px;padding:3px 10px;font-size:11px;font-family:var(--mono);color:var(--amber)">ionos_source</span>
+          <span style="background:var(--surface);border:1px solid #fde68a;border-radius:4px;padding:3px 10px;font-size:11px;font-family:var(--mono);color:var(--amber)">lead_source_ext</span>
+          <span style="background:var(--surface);border:1px solid #fde68a;border-radius:4px;padding:3px 10px;font-size:11px;font-family:var(--mono);color:var(--amber)">acquisition_method</span>
+          <span style="background:var(--surface);border:1px solid #fde68a;border-radius:4px;padding:3px 10px;font-size:11px;font-family:var(--mono);color:var(--amber)">acquisition_method_ext_new</span>
+          <span style="background:var(--surface);border:1px solid #fde68a;border-radius:4px;padding:3px 10px;font-size:11px;font-family:var(--mono);color:var(--amber)">ionos_country</span>
+          <span style="background:var(--surface);border:1px solid #fde68a;border-radius:4px;padding:3px 10px;font-size:11px;font-family:var(--mono);color:var(--amber)">subsidairy</span>
+          <span style="background:var(--surface);border:1px solid #fde68a;border-radius:4px;padding:3px 10px;font-size:11px;font-family:var(--mono);color:var(--amber)">first_conversion_language</span>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top:0">
+        <button class="btn btn-primary" onclick="startHubSpotUpload()" id="hs-upload-btn">⬆ Upload to HubSpot</button>
+        <button class="btn btn-ghost" onclick="downloadForHubSpot()">⬇ Download CSV instead</button>
+        <button class="btn btn-ghost btn-sm" onclick="openHubSpot()">Open HubSpot →</button>
+      </div>
+    </div>
+
+    <!-- Progress section (hidden until upload starts) -->
+    <div id="hs-progress-section" style="display:none">
+      <div style="margin-bottom:20px">
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px" id="hs-progress-label">Uploading contacts…</div>
+        <div style="background:var(--bg);border-radius:6px;height:10px;overflow:hidden;border:1px solid var(--border)">
+          <div id="hs-progress-bar" style="height:100%;background:var(--blue);width:0%;transition:width .3s;border-radius:6px"></div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px;font-family:var(--mono)" id="hs-progress-count">0 / 0</div>
+      </div>
+      <div id="hs-log" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:var(--mono);font-size:11px;color:var(--muted);max-height:200px;overflow-y:auto;line-height:1.8"></div>
+    </div>
+
+    <!-- Result section (hidden until done) -->
+    <div id="hs-result-section" style="display:none"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="showStep(4)">← Back to Preview</button>
+    <button class="btn btn-ghost" onclick="resetTool()">Start New Import</button>
+  </div>
+</div>
+
+</main>
+<div id="toast"></div>
+
+<script>
+// -- Output columns ---------------------------------------------------------
+const OUT_COLS = [
+  'firstname','lastname','Email','Phone (campaign)','jobtitle',
+  'cloud_department','cloud_market_segment','numemployees','Company',
+  'cloud_partner_website','address','zip','city','cloud_linkedin_profile',
+  'ionos_country','subsidairy','first_conversion_language',
+  'ionos_recently_requested_content_label','recently_requested_content_url',
+  'recently_requested_content_date','salesforce_status','ionos_source',
+  'lead_source_ext','acquisition_method','acquisition_method_ext_new',
+  'utm_campaign','itc_channel','itc_campaign','itc_product',
+  'cloud_confirmed_opt_in_date','confirmed_opt_in_location_wf',
+  'cloud_confirmed_opt_in_location (Form)',
+  'cloud_contact_message_c','meeting info','hubspot_owner_id',
+  'consent_to_marketing_subscription',
+  'ionos_score_for_imported_leads','interested_in_product_area',
+  'event_participation','Event Nurturing'
+];
+
+const MANDATORY = new Set([
+  'Email','ionos_country','subsidairy','first_conversion_language',
+  'salesforce_status','ionos_source','acquisition_method',
+  'hubspot_owner_id','ionos_score_for_imported_leads','interested_in_product_area'
+]);
+
+// -- Blacklist ---------------------------------------------------------------
+const BLACKLIST = new Set([
+  'AD','AF','AG','AI','AL','AM','AO','AW','AZ',
+  'BA','BB','BF','BH','BI','BJ','BM','BN','BO','BS','BT','BW','BY','BZ',
+  'CD','CF','CG','CI','CK','CM','CN','CU','CV','CW',
+  'DJ','DM','DZ','ER','ET','FJ','FM',
+  'GA','GD','GE','GH','GL','GM','GN','GQ','GW','GY',
+  'HN','HT','IQ','IR','JM','JO',
+  'KG','KH','KI','KM','KN','KP','KW','KY',
+  'LA','LC','LK','LR','LS','LY',
+  'MA','MC','MD','ME','MG','MH','MK','ML','MM','MN','MO','MR','MS','MU','MV','MW','MZ',
+  'NA','NC','NE','NH','NI','NP','NR',
+  'PF','PG','PR','PS','PW','PY','QA','RU','RW',
+  'SB','SC','SD','SL','SM','SN','SO','SR','SS','ST','SV','SX','SY','SZ',
+  'TC','TD','TG','TJ','TL','TM','TN','TO','TT','TV','TZ',
+  'UG','UY','UZ','VC','VE','VG','WS','XK','YE','ZM','ZW'
+]);
+
+// -- Country names -> ISO ----------------------------------------------------
+const COUNTRY_NAMES = {
+  'afghanistan':'AF','albanien':'AL','albania':'AL','algerien':'DZ','algeria':'DZ',
+  'andorra':'AD','angola':'AO','argentinien':'AR','argentina':'AR',
+  'armenien':'AM','armenia':'AM','australien':'AU','australia':'AU',
+  'österreich':'AT','austria':'AT','aserbaidschan':'AZ','azerbaijan':'AZ',
+  'bahamas':'BS','bahrain':'BH','bangladesch':'BD','bangladesh':'BD',
+  'weißrussland':'BY','belarus':'BY','belgien':'BE','belgium':'BE',
+  'bolivien':'BO','bolivia':'BO','bosnien':'BA','bosnia':'BA',
+  'bosnien und herzegowina':'BA','brasilien':'BR','brazil':'BR','brasil':'BR',
+  'brunei':'BN','bulgarien':'BG','bulgaria':'BG',
+  'kambodscha':'KH','cambodia':'KH','kamerun':'CM','cameroon':'CM',
+  'kanada':'CA','canada':'CA','tschad':'TD','chad':'TD',
+  'chile':'CL','china':'CN','china, volksrepublik':'CN','volksrepublik china':'CN',
+  'vr china':'CN','chinesische volksrepublik':'CN',
+  'kolumbien':'CO','colombia':'CO','kuba':'CU','cuba':'CU',
+  'zypern':'CY','cyprus':'CY','tschechien':'CZ','czech republic':'CZ','czechia':'CZ',
+  'dänemark':'DK','denmark':'DK','dominikanische republik':'DO','dominican republic':'DO',
+  'ecuador':'EC','ägypten':'EG','egypt':'EG','el salvador':'SV',
+  'eritrea':'ER','estland':'EE','estonia':'EE','äthiopien':'ET','ethiopia':'ET',
+  'fidschi':'FJ','fiji':'FJ','finnland':'FI','finland':'FI',
+  'frankreich':'FR','france':'FR',
+  'gabun':'GA','gabon':'GA','gambia':'GM','georgien':'GE','georgia':'GE',
+  'deutschland':'DE','germany':'DE',
+  'ghana':'GH','griechenland':'GR','greece':'GR',
+  'grönland':'GL','greenland':'GL','guatemala':'GT','guinea':'GN',
+  'haiti':'HT','honduras':'HN','hongkong':'HK','hong kong':'HK',
+  'ungarn':'HU','hungary':'HU',
+  'island':'IS','iceland':'IS','indien':'IN','india':'IN',
+  'indonesien':'ID','indonesia':'ID','iran':'IR','irak':'IQ','iraq':'IQ',
+  'irland':'IE','ireland':'IE','israel':'IL','italien':'IT','italy':'IT',
+  'jamaika':'JM','jamaica':'JM','japan':'JP','jordanien':'JO','jordan':'JO',
+  'kasachstan':'KZ','kazakhstan':'KZ','kenia':'KE','kenya':'KE',
+  'kirgisistan':'KG','kyrgyzstan':'KG','kuwait':'KW',
+  'laos':'LA','lettland':'LV','latvia':'LV','libanon':'LB','lebanon':'LB',
+  'lesotho':'LS','libyen':'LY','libya':'LY','liechtenstein':'LI',
+  'litauen':'LT','lithuania':'LT','luxemburg':'LU','luxembourg':'LU',
+  'madagaskar':'MG','madagascar':'MG','malaysia':'MY','malediven':'MV','maldives':'MV',
+  'mali':'ML','malta':'MT','mauretanien':'MR','mauritius':'MU',
+  'mexiko':'MX','mexico':'MX','moldau':'MD','moldova':'MD','monaco':'MC',
+  'mongolei':'MN','mongolia':'MN','montenegro':'ME',
+  'mosambik':'MZ','mozambique':'MZ','marokko':'MA','morocco':'MA',
+  'myanmar':'MM','burma':'MM',
+  'namibia':'NA','nepal':'NP','niederlande':'NL','netherlands':'NL','nederland':'NL','holland':'NL',
+  'neuseeland':'NZ','new zealand':'NZ','nicaragua':'NI',
+  'niger':'NE','nigeria':'NG','nordkorea':'KP','north korea':'KP',
+  'nordmazedonien':'MK','north macedonia':'MK','norwegen':'NO','norway':'NO',
+  'oman':'OM',
+  'pakistan':'PK','palästina':'PS','palestine':'PS','panama':'PA',
+  'paraguay':'PY','peru':'PE','philippinen':'PH','philippines':'PH',
+  'polen':'PL','poland':'PL','portugal':'PT',
+  'katar':'QA','qatar':'QA',
+  'rumänien':'RO','romania':'RO','russland':'RU','russia':'RU','russische föderation':'RU',
+  'ruanda':'RW','rwanda':'RW',
+  'saudi-arabien':'SA','saudi arabien':'SA','saudi arabia':'SA',
+  'senegal':'SN','serbien':'RS','serbia':'RS',
+  'singapur':'SG','singapore':'SG','slowakei':'SK','slovakia':'SK',
+  'slowenien':'SI','slovenia':'SI','somalia':'SO',
+  'spanien':'ES','spain':'ES','españa':'ES',
+  'sri lanka':'LK','südafrika':'ZA','south africa':'ZA',
+  'südkorea':'KR','south korea':'KR',
+  'südsudan':'SS','south sudan':'SS','suriname':'SR',
+  'schweden':'SE','sweden':'SE','schweiz':'CH','switzerland':'CH','suisse':'CH',
+  'syrien':'SY','syria':'SY',
+  'taiwan':'TW','tadschikistan':'TJ','tajikistan':'TJ',
+  'tansania':'TZ','tanzania':'TZ','thailand':'TH',
+  'togo':'TG','tonga':'TO','trinidad und tobago':'TT','trinidad and tobago':'TT',
+  'tunesien':'TN','tunisia':'TN','türkei':'TR','turkey':'TR','türkiye':'TR',
+  'turkmenistan':'TM',
+  'uganda':'UG','ukraine':'UA',
+  'vereinigte arabische emirate':'AE','uae':'AE','united arab emirates':'AE',
+  'vereinigtes königreich':'GB','großbritannien':'GB','grossbritannien':'GB',
+  'großbritannien und nordirland':'GB','großbritannien und nor':'GB',
+  'united kingdom':'GB','uk':'GB','great britain':'GB','england':'GB','britain':'GB',
+  'vereinigte staaten':'US','united states':'US','usa':'US','u.s.a.':'US',
+  'venezuela':'VE','vietnam':'VN',
+  'jemen':'YE','yemen':'YE',
+  'simbabwe':'ZW','zimbabwe':'ZW','sambia':'ZM','zambia':'ZM',
+  // Additional German/formal names
+  'großbritannien und nordirland':'GB',
+  'großbritannien und nordirland, vereinigtes königreich':'GB',
+  'vereinigtes königreich großbritannien und nordirland':'GB',
+  'äquatorialguinea':'GQ','equatorial guinea':'GQ',
+  'vereinigte staaten von amerika':'US',
+  'taiwan (republik china)':'TW','taiwan, republik china':'TW',
+  'republik china':'TW',
+  'demokratische volksrepublik korea':'KP','nordkorea':'KP',
+  'republik korea':'KR','südkorea':'KR',
+  'islamische republik iran':'IR',
+  'arabische republik syrien':'SY',
+  'sozialistische republik vietnam':'VN',
+  'föderative republik brasilien':'BR',
+  'bolivarische republik venezuela':'VE',
+  'plurinationaler staat bolivien':'BO',
+  'bundesrepublik deutschland':'DE',
+  'französische republik':'FR',
+  'königreich spanien':'ES',
+  'italienische republik':'IT',
+  'königreich der niederlande':'NL',
+  'königreich belgien':'BE',
+  'republik österreich':'AT',
+  'schweizerische eidgenossenschaft':'CH',
+  'republik polen':'PL',
+  'tschechische republik':'CZ',
+  'slowakische republik':'SK',
+  'republik ungarn':'HU',
+  'rumänien':'RO',
+  'republik bulgarien':'BG',
+  'republik kroatien':'HR',
+  'republik slowenien':'SI',
+  'republik estland':'EE',
+  'republik lettland':'LV',
+  'republik litauen':'LT',
+  'großherzogtum luxemburg':'LU',
+  'republik malta':'MT',
+  'republik zypern':'CY',
+  'hellenische republik':'GR',
+  'portugiesische republik':'PT',
+  'königreich schweden':'SE',
+  'königreich dänemark':'DK',
+  'königreich norwegen':'NO',
+  'republik finnland':'FI',
+  'republik irland':'IE',
+  'republik island':'IS',
+  // self-map ISO codes
+  'de':'DE','at':'AT','ch':'CH','gb':'GB','us':'US','fr':'FR',
+  'es':'ES','it':'IT','nl':'NL','be':'BE','pl':'PL','pt':'PT','se':'SE',
+  'dk':'DK','no':'NO','fi':'FI','ie':'IE','gr':'GR','cz':'CZ','hu':'HU',
+  'ro':'RO','bg':'BG','hr':'HR','sk':'SK','si':'SI','ee':'EE','lv':'LV',
+  'lt':'LT','lu':'LU','mt':'MT','cy':'CY','tr':'TR','ru':'RU','cn':'CN',
+  'jp':'JP','kr':'KR','in':'IN','br':'BR','mx':'MX','ca':'CA','au':'AU',
+  'za':'ZA','ae':'AE','sg':'SG','hk':'HK','nz':'NZ','ar':'AR','il':'IL',
+};
+
+// -- Country rules -----------------------------------------------------------
+const COUNTRY_RULES = {
+  // de-de: DE, AT, CH (German speaking)
+  DE:{sub:'DE',lang:'de-de'},AT:{sub:'DE',lang:'de-de'},CH:{sub:'DE',lang:'de-de'},
+  LI:{sub:'DE',lang:'de-de'},
+  // en-uk: UK/GB
+  GB:{sub:'UK',lang:'en-uk'},UK:{sub:'UK',lang:'en-uk'},
+  // en-us: US only
+  US:{sub:'US',lang:'en-us'},
+  // en-ca: CA
+  CA:{sub:'US',lang:'en-ca'},
+  // es-mx: MX
+  MX:{sub:'US',lang:'es-mx'},
+  // fr-fr: FR
+  FR:{sub:'FR',lang:'fr-fr'},
+  // es-es: ES and Spanish-speaking (sub: DE for ES, US for Latin America)
+  ES:{sub:'DE',lang:'es-es'},PT:{sub:'DE',lang:'es-es'},
+  AR:{sub:'US',lang:'es-es'},CL:{sub:'US',lang:'es-es'},CO:{sub:'US',lang:'es-es'},
+  CR:{sub:'US',lang:'es-es'},DO:{sub:'US',lang:'es-es'},EC:{sub:'US',lang:'es-es'},
+  GT:{sub:'US',lang:'es-es'},PA:{sub:'US',lang:'es-es'},PE:{sub:'US',lang:'es-es'},
+  // it-it: IT
+  IT:{sub:'DE',lang:'it-it'},
+  // en-de: all other DE subsidiary countries
+  BE:{sub:'DE',lang:'en-de'},BG:{sub:'DE',lang:'en-de'},HR:{sub:'DE',lang:'en-de'},
+  CY:{sub:'DE',lang:'en-de'},CZ:{sub:'DE',lang:'en-de'},DK:{sub:'DE',lang:'en-de'},
+  EE:{sub:'DE',lang:'en-de'},FI:{sub:'DE',lang:'en-de'},GR:{sub:'DE',lang:'en-de'},
+  HU:{sub:'DE',lang:'en-de'},IS:{sub:'DE',lang:'en-de'},IE:{sub:'DE',lang:'en-de'},
+  LV:{sub:'DE',lang:'en-de'},LT:{sub:'DE',lang:'en-de'},LU:{sub:'DE',lang:'en-de'},
+  MT:{sub:'DE',lang:'en-de'},NL:{sub:'DE',lang:'en-de'},NO:{sub:'DE',lang:'en-de'},
+  PL:{sub:'DE',lang:'en-de'},RO:{sub:'DE',lang:'en-de'},SK:{sub:'DE',lang:'en-de'},
+  SI:{sub:'DE',lang:'en-de'},SE:{sub:'DE',lang:'en-de'},
+  // en-us: rest of world (US subsidiary)
+  AU:{sub:'US',lang:'en-us'},BD:{sub:'US',lang:'en-us'},BR:{sub:'US',lang:'en-us'},
+  EG:{sub:'US',lang:'en-us'},HK:{sub:'US',lang:'en-us'},ID:{sub:'US',lang:'en-us'},
+  IL:{sub:'US',lang:'en-us'},IN:{sub:'US',lang:'en-us'},JP:{sub:'US',lang:'en-us'},
+  KZ:{sub:'US',lang:'en-us'},KE:{sub:'US',lang:'en-us'},LB:{sub:'US',lang:'en-us'},
+  MY:{sub:'US',lang:'en-us'},NG:{sub:'US',lang:'en-us'},NZ:{sub:'US',lang:'en-us'},
+  OM:{sub:'US',lang:'en-us'},PK:{sub:'US',lang:'en-us'},PH:{sub:'US',lang:'en-us'},
+  SA:{sub:'US',lang:'en-us'},RS:{sub:'US',lang:'en-us'},SG:{sub:'US',lang:'en-us'},
+  ZA:{sub:'US',lang:'en-us'},KR:{sub:'US',lang:'en-us'},TW:{sub:'US',lang:'en-us'},
+  TH:{sub:'US',lang:'en-us'},TR:{sub:'US',lang:'en-us'},UA:{sub:'US',lang:'en-us'},
+  AE:{sub:'US',lang:'en-us'},VN:{sub:'US',lang:'en-us'},
+};
+
+// -- Source -> ITC channel ----------------------------------------------------
+
+const OWNER_NAME_MAP = {
+  'hubspot':'830627960',
+  'legacy user':'899461727',
+  'legacy user':'899461727',
+  'inactive user':'726595367',
+  'inactive user':'726595367',
+  'hcp integration user':'694828289',
+  'hcp user':'694828289',
+  'snowflake integration user':'813706892',
+  'snowflake user':'813706892',
+  'insights integration':'791063840',
+  'insights integration':'791063840',
+  'achim weiss':'371899117',
+  'achim weiss':'371899117',
+  'agon berisha':'133606843',
+  'agon berisha':'133606843',
+  'alberto fernandez diaz de lope diaz':'1029695499',
+  'alberto diaz':'1029695499',
+  'alessandro izzo':'706090056',
+  'alessandro izzo':'706090056',
+  'alina sandler':'623237010',
+  'alina sandler':'623237010',
+  'alison meusburger':'908300961',
+  'alison meusburger':'908300961',
+  'amira elkanawati':'29221293',
+  'amira elkanawati':'29221293',
+  'andreas mayer':'66361351',
+  'andreas mayer':'66361351',
+  'andreas nauerz':'206428141',
+  'andreas nauerz':'206428141',
+  'angelique blanchemaison-chevallier':'152405361',
+  'angelique blanchemaison-chevallier':'152405361',
+  'ankit rawat':'473137944',
+  'ankit rawat':'473137944',
+  'anna bruske-szypowska':'30756142',
+  'anna bruske-szypowska':'30756142',
+  'anna marie wintrich':'447842294',
+  'anna wintrich':'447842294',
+  'anthony colasante':'449172961',
+  'anthony colasante':'449172961',
+  'arthur mai':'52932981',
+  'arthur mai':'52932981',
+  'barbara mairbaurl':'1368843006',
+  'barbara mairbaurl':'1368843006',
+  'begum yildiz':'893919111',
+  'begum yildiz':'893919111',
+  'belin colak':'568516289',
+  'belin colak':'568516289',
+  'benedikt harlacher':'904787312',
+  'benedikt harlacher':'904787312',
+  'benjamin heil':'65754406',
+  'benjamin heil':'65754406',
+  'benjamin schmidt':'971236818',
+  'benjamin schmidt':'971236818',
+  'buddy miller':'810704164',
+  'buddy miller':'810704164',
+  'carl grone':'698081377',
+  'carl grone':'698081377',
+  'carlos garcia moreno':'670603610',
+  'carlos moreno':'670603610',
+  'christian trocchi':'192440652',
+  'christian trocchi':'192440652',
+  'claire lock':'1026237918',
+  'claire lock':'1026237918',
+  'constantin steppeler':'681099797',
+  'constantin steppeler':'681099797',
+  'daniel benad':'522678013',
+  'daniel benad':'522678013',
+  'daniel ceravolo':'1293072708',
+  'daniel ceravolo':'1293072708',
+  'daniel storch':'742312214',
+  'daniel storch':'742312214',
+  'dimitri matveev':'1245852873',
+  'dimitri matveev':'1245852873',
+  'dominik maier':'156659751',
+  'dominik maier':'156659751',
+  'duru ertan':'33295166',
+  'duru ertan':'33295166',
+  'eduardo oroz bueno':'168951082',
+  'eduardo bueno':'168951082',
+  'emil hentschel':'649841262',
+  'emil hentschel':'649841262',
+  'emily raidt':'964092607',
+  'emily raidt':'964092607',
+  'erwan le fraillec':'49974469',
+  'erwan fraillec':'49974469',
+  'fabrice wurtz':'212167744',
+  'fabrice wurtz':'212167744',
+  'fernando fuentes fernando':'21306223',
+  'fernando fernando':'21306223',
+  'fernando sanchez garcia':'781450369',
+  'fernando garcia':'781450369',
+  'filiz akin':'858468996',
+  'filiz akin':'858468996',
+  'florim arifi':'1004638618',
+  'florim arifi':'1004638618',
+  'franck brucker':'29284347',
+  'franck brucker':'29284347',
+  'frank dorrstein':'554816105',
+  'frank dorrstein':'554816105',
+  'gabrielle balleyguier':'606188405',
+  'gabrielle balleyguier':'606188405',
+  'georgina dallas':'1364537754',
+  'georgina dallas':'1364537754',
+  'guillermo arana arroyo':'793323825',
+  'guillermo arroyo':'793323825',
+  'guillermo rodriguez ovejero':'1338632020',
+  'guillermo ovejero':'1338632020',
+  'hcp integration user':'694828289',
+  'hcp user':'694828289',
+  'hector broseta largo':'510604890',
+  'hector largo':'510604890',
+  'hubert trepkowski':'29150589',
+  'hubert trepkowski':'29150589',
+  'hussein zaki':'709728108',
+  'hussein zaki':'709728108',
+  'isabel del rio suberviola':'1128895023',
+  'isabel suberviola':'1128895023',
+  'jakob mangel':'1096548995',
+  'jakob mangel':'1096548995',
+  'jan behrens':'289892217',
+  'jan behrens':'289892217',
+  'jan schruf':'969957623',
+  'jan schruf':'969957623',
+  'javier palomino diaz':'502846540',
+  'javier diaz':'502846540',
+  'jens reich':'294433420',
+  'jens reich':'294433420',
+  'joao bule':'597124352',
+  'joao bule':'597124352',
+  'joerg walther':'752093465',
+  'joerg walther':'752093465',
+  'jorg michael thalmann':'29798223',
+  'jorg thalmann':'29798223',
+  'julia hahn':'674084490',
+  'julia hahn':'674084490',
+  'julian stimpfl':'670468813',
+  'julian stimpfl':'670468813',
+  'kaan gursoy':'714630711',
+  'kaan gursoy':'714630711',
+  'kelly digirolamo':'1314529256',
+  'kelly digirolamo':'1314529256',
+  'kim bishop':'1058177498',
+  'kim bishop':'1058177498',
+  'kristina halbekath':'29798222',
+  'kristina halbekath':'29798222',
+  'lawrence jackson':'300402818',
+  'lawrence jackson':'300402818',
+  'magnus philipp':'78017922',
+  'magnus philipp':'78017922',
+  'marc moderegger':'1226841231',
+  'marc moderegger':'1226841231',
+  'marcella alves':'513614787',
+  'marcella alves':'513614787',
+  'marcos andres bueno martin':'1263096140',
+  'marcos martin':'1263096140',
+  'marina kogel':'779463239',
+  'marina kogel':'779463239',
+  'mario kohler':'683760711',
+  'mario kohler':'683760711',
+  'marion hahn':'71348886',
+  'marion hahn':'71348886',
+  'marisa corcuera san martin':'685381607',
+  'marisa martin':'685381607',
+  'martin baumhaus':'972496512',
+  'martin baumhaus':'972496512',
+  'marvin holzer':'294307319',
+  'marvin holzer':'294307319',
+  'mayur choudhari':'451851711',
+  'mayur choudhari':'451851711',
+  'melina gillard':'566960939',
+  'melina gillard':'566960939',
+  'merve gozde canli':'32099260',
+  'merve canli':'32099260',
+  'methun anandavallipuram':'525683498',
+  'methun anandavallipuram':'525683498',
+  'michael klos':'1278943253',
+  'michael klos':'1278943253',
+  'miguel castanos zazo':'290546678',
+  'miguel zazo':'290546678',
+  'miriam bustillo de la pena':'29354631',
+  'miriam pena':'29354631',
+  'mohamed mansour':'381178526',
+  'mohamed mansour':'381178526',
+  'murat gundogdu':'1260172526',
+  'murat gundogdu':'1260172526',
+  'nico saborowski':'849886290',
+  'nico saborowski':'849886290',
+  'nico saborowski':'981326601',
+  'nico saborowski':'981326601',
+  'nour hussein':'78563806',
+  'nour hussein':'78563806',
+  'oliver kauert':'211661984',
+  'oliver kauert':'211661984',
+  'patrick plante':'1356380011',
+  'patrick plante':'1356380011',
+  'paul mccutcheon':'166693595',
+  'paul mccutcheon':'166693595',
+  'phillip maasberg':'960421355',
+  'phillip maasberg':'960421355',
+  'piyush jain':'193546365',
+  'piyush jain':'193546365',
+  'rainer weissert':'608694382',
+  'rainer weissert':'608694382',
+  'ray farid':'986482789',
+  'ray farid':'986482789',
+  'robert oliver':'282854680',
+  'robert oliver':'282854680',
+  'ronny werner':'774384957',
+  'ronny werner':'774384957',
+  'sabine rosemann':'505750998',
+  'sabine rosemann':'505750998',
+  'sebastian albrecht':'565469488',
+  'sebastian albrecht':'565469488',
+  'sebastian mews':'29679807',
+  'sebastian mews':'29679807',
+  'selah stivers':'84829228',
+  'selah stivers':'84829228',
+  'seth helgesen':'862532696',
+  'seth helgesen':'862532696',
+  'silke reker-reid':'465084987',
+  'silke reker-reid':'465084987',
+  'stefan corvers':'609183548',
+  'stefan corvers':'609183548',
+  'stefan erkeling':'226428787',
+  'stefan erkeling':'226428787',
+  'stephan hartig':'613296447',
+  'stephan hartig':'613296447',
+  'susana perez lizuain':'1180908176',
+  'susana lizuain':'1180908176',
+  'tatjana rudolph':'609377080',
+  'tatjana rudolph':'609377080',
+  'thac nguyen':'246666676',
+  'thac nguyen':'246666676',
+  'thomas brown':'1205360897',
+  'thomas brown':'1205360897',
+  'thomas lehner':'284537447',
+  'thomas lehner':'284537447',
+  'tim kartali':'949503749',
+  'tim kartali':'949503749',
+  'tim rogait':'797816625',
+  'tim rogait':'797816625',
+  'tobias hoffmann':'1244888148',
+  'tobias hoffmann':'1244888148',
+  'tobias waldmann':'722297304',
+  'tobias waldmann':'722297304',
+  'vladimir mazurier':'1133117222',
+  'vladimir mazurier':'1133117222',
+  'wided jamil':'334777039',
+  'wided jamil':'334777039',
+  'xenia maier':'1036212714',
+  'xenia maier':'1036212714',
+  'xenia ofner':'401778980',
+  'xenia ofner':'401778980',
+  'yassa suleman':'368947314',
+  'yassa suleman':'368947314',
+  'zachary watson':'1037063808',
+  'zachary watson':'1037063808',
+  'isabel ortiz':'29191377',
+  'isabel ortiz':'29191377'
+};
+const OWNER_MAP = {'830627960':'Hubspot', '899461727':'Legacy User', '726595367':'Inactive User', '694828289':'HCP Integration User', '813706892':'Snowflake Integration User', '791063840':'Insights Integration', '371899117':'Achim Weiss', '133606843':'Agon Berisha', '1029695499':'Alberto Fernandez Diaz de Lope Diaz', '706090056':'Alessandro Izzo', '623237010':'Alina Sandler', '908300961':'Alison Meusburger', '29221293':'Amira Elkanawati', '66361351':'Andreas Mayer', '206428141':'Andreas Nauerz', '152405361':'Angelique Blanchemaison-Chevallier', '473137944':'Ankit Rawat', '30756142':'Anna Bruske-Szypowska', '447842294':'Anna Marie Wintrich', '449172961':'Anthony Colasante', '52932981':'Arthur Mai', '1368843006':'Barbara Mairbaurl', '893919111':'Begum Yildiz', '568516289':'Belin Colak', '904787312':'Benedikt Harlacher', '65754406':'Benjamin Heil', '971236818':'Benjamin Schmidt', '810704164':'Buddy Miller', '698081377':'Carl Grone', '670603610':'Carlos Garcia Moreno', '192440652':'Christian Trocchi', '1026237918':'Claire Lock', '681099797':'Constantin Steppeler', '522678013':'Daniel Benad', '1293072708':'Daniel Ceravolo', '742312214':'Daniel Storch', '1245852873':'Dimitri Matveev', '156659751':'Dominik Maier', '33295166':'Duru Ertan', '168951082':'Eduardo Oroz Bueno', '649841262':'Emil Hentschel', '964092607':'Emily Raidt', '49974469':'Erwan Le Fraillec', '212167744':'Fabrice Wurtz', '21306223':'Fernando Fuentes Fernando', '781450369':'Fernando Sanchez Garcia', '858468996':'Filiz Akin', '1004638618':'Florim Arifi', '29284347':'Franck Brucker', '554816105':'Frank Dorrstein', '606188405':'Gabrielle Balleyguier', '1364537754':'Georgina Dallas', '793323825':'Guillermo Arana Arroyo', '1338632020':'Guillermo Rodriguez Ovejero', '694828289':'HCP Integration User', '510604890':'Hector Broseta Largo', '29150589':'Hubert Trepkowski', '709728108':'Hussein Zaki', '1128895023':'Isabel del Rio Suberviola', '1096548995':'Jakob Mangel', '289892217':'Jan Behrens', '969957623':'Jan Schruf', '502846540':'Javier Palomino Diaz', '294433420':'Jens Reich', '597124352':'Joao Bule', '752093465':'Joerg Walther', '29798223':'Jorg Michael Thalmann', '674084490':'Julia Hahn', '670468813':'Julian Stimpfl', '714630711':'Kaan Gursoy', '1314529256':'Kelly DiGirolamo', '1058177498':'Kim Bishop', '29798222':'Kristina Halbekath', '300402818':'Lawrence Jackson', '78017922':'Magnus Philipp', '1226841231':'Marc Moderegger', '513614787':'Marcella Alves', '1263096140':'Marcos Andres Bueno Martin', '779463239':'Marina Kogel', '683760711':'Mario Kohler', '71348886':'Marion Hahn', '685381607':'Marisa Corcuera San Martin', '972496512':'Martin Baumhaus', '294307319':'Marvin Holzer', '451851711':'Mayur Choudhari', '566960939':'Melina Gillard', '32099260':'Merve Gozde Canli', '525683498':'Methun Anandavallipuram', '1278943253':'Michael Klos', '290546678':'Miguel Castanos Zazo', '29354631':'Miriam Bustillo de la Pena', '381178526':'Mohamed Mansour', '1260172526':'Murat Gundogdu', '849886290':'Nico Saborowski', '981326601':'Nico Saborowski', '78563806':'Nour Hussein', '211661984':'Oliver Kauert', '1356380011':'Patrick Plante', '166693595':'Paul McCutcheon', '960421355':'Phillip Maasberg', '193546365':'Piyush Jain', '608694382':'Rainer Weissert', '986482789':'Ray Farid', '282854680':'Robert Oliver', '774384957':'Ronny Werner', '505750998':'Sabine Rosemann', '565469488':'Sebastian Albrecht', '29679807':'Sebastian Mews', '84829228':'Selah Stivers', '862532696':'Seth Helgesen', '465084987':'Silke Reker-Reid', '609183548':'Stefan Corvers', '226428787':'Stefan Erkeling', '613296447':'Stephan Hartig', '1180908176':'Susana Perez Lizuain', '609377080':'Tatjana Rudolph', '246666676':'Thac Nguyen', '1205360897':'Thomas Brown', '284537447':'Thomas Lehner', '949503749':'Tim Kartali', '797816625':'Tim Rogait', '1244888148':'Tobias Hoffmann', '722297304':'Tobias Waldmann', '1133117222':'Vladimir Mazurier', '334777039':'Wided Jamil', '1036212714':'Xenia Maier', '401778980':'Xenia Ofner', '368947314':'Yassa Suleman', '1037063808':'Zachary Watson', '29191377':'isabel ortiz'};
+const SOURCE_ITC = {
+  'Event':'Z96IZTK7','Webinar':'XZIPHLY3','Conference':'Z96IZTK7',
+  'Display':'FZTXCWY7','Mailing':'TDW9FFFN','Paid Mailing':'0PPOGX4L',
+  'Social':'ZZ7E9BFA','Print':'2XVYWLL0','Cognism':'3DK14RGS',
+  'Lead Paid':'7PXSJNZG','Affiliates':'3DK14RGS','Partners':'LTNC1OJD',
+  'Traffic Paid':'7PXSJNZG','Outbound':'BDTA91FZ','SEA-Brand':'3DK14RGS',
+  'SEA-Brand Generic':'3DK14RGS','SEA-Generic':'3DK14RGS',
+  'Traffic Organic':'3DK14RGS','Connected TV':'FZTXCWY7',
+};
+
+// -- Industry map ------------------------------------------------------------
+const INDUSTRY_MAP = {
+  '01. technology services':'01. Technology Services',
+  '02. manufacturing':'02. Manufacturing',
+  '03. publishing / media':'03. Publishing / Media',
+  '04. retail / portal':'04. Retail / Portal',
+  '05. finance / insurance':'05. Finance / Insurance',
+  '06. non-it-service provider':'06. Non-IT-Service Provider',
+  '07. telco / isp':'07. Telco / ISP',
+  '08. utilities':'08. Utilities',
+  '09. transport / logistics':'09. Transport / Logistics',
+  '10. edu / university/ research':'10. Edu / University/ Research',
+  '11. public sector':'11. Public Sector',
+  '12. private':'12. Private',
+  'it services and technologies':'01. Technology Services',
+  'it consultancy':'01. Technology Services','software':'01. Technology Services',
+  'softwarehaus':'01. Technology Services','software development':'01. Technology Services',
+  'it-consulting':'01. Technology Services','it consulting':'01. Technology Services',
+  'it services':'01. Technology Services','msp':'01. Technology Services',
+  'isv':'01. Technology Services','systemhaus':'01. Technology Services',
+  'saas':'01. Technology Services','cloud provider':'01. Technology Services',
+  'data solutions':'01. Technology Services','digital information':'01. Technology Services',
+  'manufacturing':'02. Manufacturing','maschinenbau':'02. Manufacturing',
+  'automobilhersteller':'02. Manufacturing','chemie':'02. Manufacturing',
+  'media':'03. Publishing / Media','publishing':'03. Publishing / Media',
+  'communications':'03. Publishing / Media','werbeagentur':'03. Publishing / Media',
+  'advertising/marketing/pr':'03. Publishing / Media',
+  'retail':'04. Retail / Portal','ecommerce':'04. Retail / Portal',
+  'e-commerce':'04. Retail / Portal','einzelhandel':'04. Retail / Portal',
+  'handel':'04. Retail / Portal','wholesale':'04. Retail / Portal',
+  'financial services':'05. Finance / Insurance','finance':'05. Finance / Insurance',
+  'insurance':'05. Finance / Insurance','banking':'05. Finance / Insurance',
+  'fintech':'05. Finance / Insurance','bank':'05. Finance / Insurance',
+  'versicherung':'05. Finance / Insurance',
+  'business and professional services':'06. Non-IT-Service Provider',
+  'professional services':'06. Non-IT-Service Provider',
+  'consulting':'06. Non-IT-Service Provider','beratung':'06. Non-IT-Service Provider',
+  'hospitality':'06. Non-IT-Service Provider','hotel':'06. Non-IT-Service Provider',
+  'legal':'06. Non-IT-Service Provider','law':'06. Non-IT-Service Provider',
+  'telecommunications':'07. Telco / ISP','telecom':'07. Telco / ISP',
+  'telco':'07. Telco / ISP','isp':'07. Telco / ISP','mobilfunk':'07. Telco / ISP',
+  'utilities':'08. Utilities','energy':'08. Utilities','energie':'08. Utilities',
+  'stadtwerke':'08. Utilities',
+  'transportation':'09. Transport / Logistics','transport':'09. Transport / Logistics',
+  'logistics':'09. Transport / Logistics','logistik':'09. Transport / Logistics',
+  'airline':'09. Transport / Logistics','warehousing':'09. Transport / Logistics',
+  'education':'10. Edu / University/ Research',
+  'higher education':'10. Edu / University/ Research',
+  'university':'10. Edu / University/ Research','universität':'10. Edu / University/ Research',
+  'research':'10. Edu / University/ Research','forschung':'10. Edu / University/ Research',
+  'public sector':'11. Public Sector','government':'11. Public Sector',
+  'government - federal/central':'11. Public Sector',
+  'government - state/local/regional':'11. Public Sector',
+  'behörde':'11. Public Sector','ministerium':'11. Public Sector',
+  'private':'12. Private','privatperson':'12. Private',
+};
+
+function mapIndustryFuzzy(raw) {
+  const s = raw.toLowerCase();
+  if (/software|cloud|it.?consult|msp|isv|systemhaus|saas|digital.?solution|tech.?service|devops/.test(s)) return '01. Technology Services';
+  if (/manufactur|fertigu|maschinenbau|automobil|chemie|pharma|electronics|fabricat/.test(s)) return '02. Manufacturing';
+  if (/media|publish|adverti|broadcast|zeitung|verlag|streaming|kommunikation/.test(s)) return '03. Publishing / Media';
+  if (/retail|e.?commerce|shop|handel|supermarkt|wholesale|fashion/.test(s)) return '04. Retail / Portal';
+  if (/financ|bank|insurance|versicherung|fintech|invest|capital/.test(s)) return '05. Finance / Insurance';
+  if (/consult|beratung|hotel|hospitality|gastro|legal|law|anwalt|facility|travel/.test(s)) return '06. Non-IT-Service Provider';
+  if (/telco|telecom|isp|mobilfunk|internet.?provider|carrier/.test(s)) return '07. Telco / ISP';
+  if (/utilit|energie|energy|strom|stadtwerk/.test(s)) return '08. Utilities';
+  if (/transport|logistic|logistik|spedition|airline|freight|shipping|warehou|airport/.test(s)) return '09. Transport / Logistics';
+  if (/universi|education|school|schule|research|forschung|akadem|college/.test(s)) return '10. Edu / University/ Research';
+  if (/government|public.?sector|behörde|ministerium|regierung|military|municipal/.test(s)) return '11. Public Sector';
+  if (/private|personal|individual|privatperson/.test(s)) return '12. Private';
+  return null;
+}
+
+// -- Employee size parser ----------------------------------------------------
+function parseEmployeeSize(raw) {
+  if (!raw) return '';
+  const s = String(raw).toLowerCase().trim().replace(/,/g,'').replace(/\s+/g,' ');
+  if (/^\d+$/.test(s)) return s;
+  const moreMatch = s.match(/(?:more than|over|>)\s*(\d+)/);
+  if (moreMatch) return String(parseInt(moreMatch[1]) + 1);
+  const plusMatch = s.match(/^(\d+)\s*\+/);
+  if (plusMatch) return String(parseInt(plusMatch[1]) + 1);
+  const rangeMatch = s.match(/(\d+)\s*(?:-|-|to)\s*(\d+)/);
+  if (rangeMatch) return rangeMatch[2];
+  const lessMatch = s.match(/(?:less than|fewer than|<)\s*(\d+)/);
+  if (lessMatch) return lessMatch[1];
+  const nums = s.match(/\d+/g);
+  if (nums) return nums[nums.length - 1];
+  return raw;
+}
+
+// -- Column synonyms ---------------------------------------------------------
+const COL_MAP = {
+  'first name':'firstname','firstname':'firstname','vorname':'firstname','nombre':'firstname','given name':'firstname',
+  'forename':'firstname','prénom':'firstname','vornamen':'firstname',
+  'last name':'lastname','lastname':'lastname','nachname':'lastname','apellido':'lastname','surname':'lastname',
+  'family name':'lastname','nom':'lastname','nachname':'lastname',
+  // Full name columns - handled specially in processRecords
+  'full name':'__fullname__','fullname':'__fullname__','name':'__fullname__',
+  'user name':'__fullname__','username':'__fullname__','contact name':'__fullname__',
+  'participant name':'__fullname__','attendee name':'__fullname__',
+  'vollständiger name':'__fullname__','vollname':'__fullname__',
+  'nombre completo':'__fullname__','nom complet':'__fullname__',
+  'email':'Email','email address':'Email','correo':'Email','e-mail':'Email','mail':'Email',
+  'phone':'Phone (campaign)','phone number':'Phone (campaign)','phone (campaign)':'Phone (campaign)',
+  'teléfono':'Phone (campaign)','mobile':'Phone (campaign)','work phone':'Phone (campaign)',
+  'organization':'Company','company':'Company','empresa':'Company','organisation':'Company','firma':'Company',
+  'account':'Company','account name':'Company','company name':'Company',
+  'job title':'jobtitle','jobtitle':'jobtitle','title':'jobtitle','position':'jobtitle',
+  'cargo':'jobtitle','role':'jobtitle','function':'jobtitle','designation':'jobtitle',
+  'work address 1':'address','work address':'address','address':'address','street':'address',
+  'dirección':'address','strasse':'address','straße':'address','street address':'address',
+  'work address 2':'__addr2','address 2':'__addr2','address line 2':'__addr2',
+  'work city':'city','city':'city','ciudad':'city','stadt':'city',
+  'work zip/postal code':'zip','zip':'zip','postal code':'zip','postcode':'zip',
+  'plz':'zip','postleitzahl':'zip','código postal':'zip','code postal':'zip','cap':'zip',
+  'work country/region':'ionos_country','country':'ionos_country','land':'ionos_country',
+  'país':'ionos_country','region':'ionos_country','territory':'ionos_country',
+  'company industry':'cloud_market_segment','industry':'cloud_market_segment',
+  'sector':'cloud_market_segment','branche':'cloud_market_segment',
+  'vertical':'cloud_market_segment','business type':'cloud_market_segment',
+  'company employee size':'numemployees','employees':'numemployees',
+  'company size':'numemployees','headcount':'numemployees','employee count':'numemployees',
+  'size':'numemployees','staff':'numemployees','anzahl mitarbeiter':'numemployees',
+  'website':'cloud_partner_website','company website':'cloud_partner_website',
+  'linkedin':'cloud_linkedin_profile','linkedin url':'cloud_linkedin_profile',
+  'department':'cloud_department','abteilung':'cloud_department',
+  'registriert am':'recently_requested_content_date',
+  'registered at':'recently_requested_content_date',
+  'registration date':'recently_requested_content_date',
+  'created at':'recently_requested_content_date',
+  'signup date':'recently_requested_content_date',
+  'einlass am':'recently_requested_content_date',
+  'score':'ionos_score_for_imported_leads',
+  'lead score':'ionos_score_for_imported_leads',
+  'hubspot_owner_id':'hubspot_owner_id','owner':'hubspot_owner_id','owner id':'hubspot_owner_id','contact owner':'hubspot_owner_id',
+  'salesforce_status':'salesforce_status','sf status':'salesforce_status',
+  'event_participation':'event_participation',
+  'participation':'event_participation',
+  'event nurturing':'Event Nurturing',
+  'consent':'consent_to_marketing_subscription',
+  'marketing consent':'consent_to_marketing_subscription',
+  'consent_to_marketing_subscription':'consent_to_marketing_subscription',
+  'confirmed_opt_in_location_wf':'confirmed_opt_in_location_wf',
+  'cloud_confirmed_opt_in_location (form)':'cloud_confirmed_opt_in_location (Form)',
+};
+OUT_COLS.forEach(c => { COL_MAP[c.toLowerCase()] = c; });
+
+// -- Valid value sets --------------------------------------------------------
+const VALID_PARTICIPATION = new Set(['Attended','No Show','Cancelled']);
+const VALID_NURTURING     = new Set(['Yes','No']);
+const VALID_OI_FORM = new Set([
+  'Signup / Trial Form','Download Form','Contact Form','Event','Webinar',
+  'Telemarketing','IONOS CORE','Newsflash','Cognism LeadGen',
+  'Telesales Gipfelsturm','Telsesales NetMedia','Telesales Compris',
+  'Telemarketing IDG','Marketing Consent for non-DOI countries'
+]);
+
+function normalizeParticipation(v) {
+  if (!v) return '';
+  const s = v.trim().toLowerCase();
+  if (s==='attended'||s==='yes'||s==='teilgenommen') return 'Attended';
+  if (s==='no show'||s==='noshow'||s==='absent') return 'No Show';
+  if (s==='cancelled'||s==='canceled'||s==='storniert') return 'Cancelled';
+  if (s==='registered'||s==='registriert') return 'Attended';
+  return VALID_PARTICIPATION.has(v.trim()) ? v.trim() : '';
+}
+function normalizeNurturing(v) {
+  if (!v) return '';
+  const s = v.trim().toLowerCase();
+  if (s==='yes'||s==='true'||s==='ja'||s==='1') return 'Yes';
+  if (s==='no'||s==='false'||s==='nein'||s==='0') return 'No';
+  return VALID_NURTURING.has(v.trim()) ? v.trim() : '';
+}
+function normalizeOIForm(v) {
+  if (!v) return '';
+  const t = v.trim();
+  const match = [...VALID_OI_FORM].find(x => x.toLowerCase()===t.toLowerCase());
+  return match || '';
+}
+function normalizeScore(v) {
+  if (!v) return '';
+  const s = String(v).trim().toLowerCase();
+  if (s==='super hot'||s==='100') return 'Super hot';
+  if (s==='hot'||s==='70') return 'Hot';
+  if (s==='warm'||s==='30') return 'Warm';
+  if (s==='cold'||s==='10') return 'Cold';
+  if (s==='super cold'||s==='-10') return 'Super Cold';
+  if (s==='yes'||s==='y'||s==='1'||s==='true'||s==='ja'||s==='si') return 'Hot';
+  if (s==='no'||s==='n'||s==='0'||s==='false'||s==='nein') return 'Cold';
+  if (s.includes('maybe')||s.includes('might')||s.includes('nurt')||s.includes('potential')) return 'Warm';
+  if (s.includes('very')||s.includes('definitely')||s.includes('super')) return 'Super hot';
+  if (s.includes('not interested')||s.includes('unqualified')) return 'Super Cold';
+  return 'Cold';
+}
+function fixEmailTypos(email) {
+  if (!email) return email;
+  let e = email.trim().replace(/\s+/g,'');
+  const fixes = {'.con':'.com','.cmo':'.com','.ocm':'.com','.coim':'.com',
+    '.comm':'.com','.coom':'.com','.vom':'.com','.xom':'.com','.cm':'.com',
+    '.ner':'.net','.nte':'.net','.og':'.org','.orh':'.org'};
+  for (const [w,r] of Object.entries(fixes)) {
+    const rx = new RegExp(w.replace('.','\\.')+'$','i');
+    if (rx.test(e)) { e=e.replace(rx,r); break; }
+  }
+  return e;
+}
+function cleanPhone(p) {
+  if (!p) return '';
+  p = String(p).trim().replace(/^'+/,'');
+  if (/^\d[\d.]+[eE]\d+$/.test(p.replace(/[+\s]/,''))) p=Math.round(parseFloat(p)).toString();
+  return p.replace(/[^0-9]/g,'');
+}
+function cleanDateSerial(n) {
+  if (!n) return '';
+  const d = new Date(Math.round((n-25569)*86400*1000));
+  return d.toISOString().slice(0,10);
+}
+function cleanDate(d) {
+  if (!d) return '';
+  const s = String(d).trim();
+  if (s instanceof Date) return s.toISOString().slice(0,10);
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0,10);
+  const m1 = s.match(/^(\d{1,2})[\/\.\-](\d{1,2})[\/\.\-](\d{4})/);
+  if (m1) return `${m1[3]}-${m1[2].padStart(2,'0')}-${m1[1].padStart(2,'0')}`;
+  if (/^\d{4,6}(\.\d+)?$/.test(s) && parseFloat(s)>40000) return cleanDateSerial(parseFloat(s));
+  return s;
+}
+function toTitleCase(s) {
+  return s.replace(/\S+/g,w=>(w===w.toUpperCase()||w===w.toLowerCase())?w[0].toUpperCase()+w.slice(1).toLowerCase():w);
+}
+function formatAddress(a) {
+  if (!a) return '';
+  const m = a.match(/^(\d+)\s+(.+)$/);
+  return m ? `${m[2]} ${m[1]}` : a;
+}
+function todayStr() { return new Date().toISOString().slice(0,10); }
+function toast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// -- State -------------------------------------------------------------------
+let rawData=[], headers=[], columnMap={}, records=[], cleanedData=[];
+let sampleValues={};
+
+// -- Upload ------------------------------------------------------------------
+
+const zone=document.getElementById('upload-zone');
+zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('drag');});
+zone.addEventListener('dragleave',()=>zone.classList.remove('drag'));
+zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drag');handleFile(e.dataTransfer.files[0]);});
+
+function handleFile(file) {
+  if (!file) return;
+  if (typeof XLSX === 'undefined') {
+    alert('XLSX library not loaded. Make sure you are running via: python leadflow_server.py');
+    return;
+  }
+  try {
+    var reader = new FileReader();
+    reader.onerror = function(e) { alert('Could not read file: ' + e.target.error); };
+    reader.onload = function(e) {
+      var wb = XLSX.read(e.target.result, {type:'array', cellDates:true, cellNF:false, cellText:false});
+      var ws = wb.Sheets[wb.SheetNames[0]];
+      var raw = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+      var hRow = 0;
+      for (var i = 0; i < Math.min(raw.length, 15); i++) {
+        var s = raw[i].join(' ').toLowerCase();
+        if (s.indexOf('first name') !== -1 || s.indexOf('firstname') !== -1 ||
+            s.indexOf('email') !== -1 || s.indexOf('vorname') !== -1) {
+          hRow = i; break;
+        }
+      }
+      headers = raw[hRow].map(function(h){return String(h).trim();}).filter(function(h){return h;});
+      rawData = raw.slice(hRow+1).filter(function(row){
+        return row.some(function(c){return String(c).trim() !== '';});
+      });
+      sampleValues = {};
+      headers.forEach(function(h, i) {
+        for (var r = 0; r < rawData.length; r++) {
+          var v = rawData[r][i];
+          if (v instanceof Date) v = v.toISOString().slice(0,10);
+          else if (typeof v === 'number' && v > 40000 && v < 60000) v = cleanDateSerial(v);
+          else v = String(v || '').trim();
+          if (v && v.length < 60) { sampleValues[h] = v; break; }
+        }
+      });
+      document.getElementById('header-file').textContent = file.name + ' - ' + rawData.length + ' rows';
+      buildMapping();
+      showStep(2);
+    };
+    reader.readAsArrayBuffer(file);
+  } catch(err) {
+    alert('Error reading file: ' + err.message);
+  }
+}
+
+
+function buildMapping() {
+  columnMap={};
+  headers.forEach(h=>{
+    const k=h.toLowerCase().trim().replace(/\s+/g,' ');
+    columnMap[h]=COL_MAP[k]||COL_MAP[k.replace(/[^a-z0-9 ]/g,'').trim()]
+      ||(OUT_COLS.includes(h)?h:null)||OUT_COLS.find(c=>c.toLowerCase()===k)||'__skip__';
+  });
+  // Detect yes/no question columns for score
+  headers.forEach(h=>{
+    if (/hot\s*lead|is.*hot|warm\s*lead/i.test(h)) columnMap[h]='__score_question__';
+  });
+  const direct=headers.filter(h=>OUT_COLS.includes(h)).length;
+  const auto=Object.values(columnMap).filter(v=>v!=='__skip__').length;
+  const info=document.getElementById('map-info');
+  info.className='alert a-ok';
+  info.innerHTML='<b>' + (auto) + '/' + (headers.length) + ' columns</b> auto-mapped. Review and adjust below.';
+  const addrKw=['address','street','dirección','addr','strasse'];
+  const addrCols=headers.filter(h=>addrKw.some(k=>h.toLowerCase().includes(k)));
+  const hint=document.getElementById('addr-hint');
+  if (addrCols.length>1) { hint.style.display='block'; hint.innerHTML='<b>' + (addrCols.length) + ' address columns</b> (' + (addrCols.join(', ')) + ') - will be concatenated.'; }
+  else hint.style.display='none';
+  const tbody=document.getElementById('map-tbody'); tbody.innerHTML='';
+  headers.forEach(h=>{
+    const tr=document.createElement('tr');
+    const sel=document.createElement('select');
+    sel.style.cssText='width:100%;font-size:12px';
+    sel.dataset.raw=h;
+    sel.onchange=()=>{ columnMap[h]=sel.value; };
+    [['__skip__','- skip -'],['__addr2','-> concat to address'],['__fullname__','-> split to first + last name'],
+     ...OUT_COLS.map(c=>[c,c])].forEach(([v,t])=>{
+      const o=document.createElement('option'); o.value=v; o.textContent=t; sel.appendChild(o);
+    });
+    sel.value=columnMap[h]||'__skip__';
+    tr.innerHTML='<td><span class="raw-pill">' + (h) + '</span></td><td class="arrow">-></td><td></td><td><span class="sval" title="' + (sampleValues[h]||'') + '">' + (sampleValues[h]||'-') + '</span></td>';
+    tr.cells[2].appendChild(sel);
+    tbody.appendChild(tr);
+  });
+}
+
+// -- Auto-generate -----------------------------------------------------------
+function autoGenerate() {
+  const name=document.getElementById('ev-name').value.trim();
+  const raw=document.getElementById('ev-mmyyyy').value.trim();
+  const ctry=document.getElementById('ev-ctry').value;
+  const source=document.getElementById('ev-src').value;
+  if (!name||!raw) return;
+  let labelDate=raw, utmDate=raw;
+  if (/^\d{8}$/.test(raw)) { labelDate=raw.slice(2); utmDate=raw; }
+  const sourceLabel=source||'Event';
+  const label=`${sourceLabel}: ${name} ${utmDate}`;
+  const lseValue=`${name} ${utmDate}`;
+  const amenValue=`${sourceLabel}: ${name} ${utmDate}`;
+  const SOURCE_UTM={
+    'Webinar':['WBN','webinar'],'Event':['EVT','event'],'Conference':['EVT','event'],
+    'Mailing':['MLG','mailing'],'Paid Mailing':['MLG','mailing'],
+    'Display':['DSP','display'],'Social':['SOC','social'],
+    'SEA-Brand':['SEA','sea-brand'],'Lead Paid':['LDP','lead-paid'],
+    'Affiliates':['AFF','affiliates'],'Partners':['PRT','partners'],
+    'Print':['PRT','print'],'Traffic Organic':['ORG','organic'],
+    'Traffic Paid':['TRP','traffic-paid'],'Referral IONOS':['REF','referral'],
+  };
+  const [prefix,typeSlug]=SOURCE_UTM[source]||[source.slice(0,3).toUpperCase(),source.toLowerCase().replace(/ /g,'-')];
+  const utm=`${prefix}-${ctry}-ECL-ECLX-${name}--${typeSlug}---${utmDate}`;
+  document.getElementById('gen-label').value=label;
+  document.getElementById('gen-lse').value=lseValue;
+  document.getElementById('gen-amen').value=amenValue;
+}
+function onSourceChange() {
+  const src=document.getElementById('ev-src').value;
+  document.getElementById('ev-itc-ch').value=SOURCE_ITC[src]||'';
+  autoGenerate();
+}
+
+// -- Navigation ---------------------------------------------------------------
+function showStep(n) {
+  [1,2,3,4,5].forEach(i=>{
+    const s=document.getElementById(`s${i}`);
+    if(s) s.style.display=i===n?'block':'none';
+    const el=document.getElementById(`step-${i}`);
+    if(el) el.className='step'+(i<n?' done':i===n?' active':'');
+  });
+}
+function goStep3() {
+  document.querySelectorAll('#map-tbody select').forEach(sel=>{columnMap[sel.dataset.raw]=sel.value;});
+  showStep(3);
+}
+async function goStep4() {
+  try { processRecords(); } catch(e) {
+    console.error('processRecords:',e);
+    document.getElementById('preview-table').innerHTML='<tbody><tr><td style="padding:20px;color:red">Error: ' + (e.message) + '</td></tr></tbody>';
+    showStep(4); renderStats(); return;
+  }
+  showStep(4);
+  renderStats();
+  renderIssues();
+  try { renderPreview(); } catch(e) {
+    console.error('renderPreview:',e);
+    document.getElementById('preview-table').innerHTML='<tbody><tr><td style="padding:20px;color:red">Preview error: ' + (e.message) + '</td></tr></tbody>';
+  }
+  checkExportReady();
+  const needsAI=records.filter(r=>!r._dup&&!r._noEmail&&!r._blacklisted&&(!r.ionos_country||!r.subsidairy||!r.first_conversion_language));
+  const needsIndustryAI=records.filter(r=>!r._dup&&!r._noEmail&&!r._blacklisted&&r._industryUnknown);
+  const aiPromises=[];
+  if (needsAI.length>0) aiPromises.push(runAI(needsAI));
+  if (needsIndustryAI.length>0) aiPromises.push(classifyIndustries(needsIndustryAI));
+  if (aiPromises.length>0) { await Promise.all(aiPromises); renderPreview(); renderStats(); }
+}
+
+// -- Process records ----------------------------------------------------------
+function processRecords() {
+  document.querySelectorAll('#map-tbody select').forEach(sel=>{columnMap[sel.dataset.raw]=sel.value;});
+  const addr2=headers.filter(h=>columnMap[h]==='__addr2');
+  const seen=new Set();
+  let phones=0;
+  records=[];
+  rawData.forEach((row,ri)=>{
+    const r={_ri:ri,_dup:false,_noEmail:false,_blacklisted:false,_auto:{},_mapped:{}};
+    headers.forEach((h,hi)=>{
+      const t=columnMap[h];
+      if (!t||t==='__skip__'||t==='__addr2') return;
+      if (t==='__score_question__') {
+        const sv=String(row[hi]||'').trim();
+        if (!r['ionos_score_for_imported_leads']) {
+          r['ionos_score_for_imported_leads']=normalizeScore(sv||'Cold');
+          r._mapped['ionos_score_for_imported_leads']=true;
+        }
+        return;
+      }
+      let val=row[hi];
+      // Never convert to date for text fields like zip, phone, name
+      const TEXT_ONLY = new Set(['zip','Phone (campaign)','address','city','firstname','lastname','Company','jobtitle','cloud_department','cloud_partner_website','cloud_linkedin_profile','cloud_contact_message_c','meeting info','hubspot_owner_id','itc_campaign','utm_campaign']);
+      if (TEXT_ONLY.has(t)) {
+        val = (typeof val === 'number') ? String(val) : String(val || '').trim();
+      } else if (val instanceof Date) {
+        val = val.toISOString().slice(0,10);
+      } else if (typeof val === 'number' && val > 40000 && val < 60000) {
+        val = cleanDateSerial(val);
+      }
+      if (t==='__fullname__') {
+        const fullName=String(val||'').trim();
+        if (fullName) {
+          const parts=fullName.split(' ').filter(function(p){return p.length>0;});
+          if (parts.length>=2) {
+            if (!r['firstname']) r['firstname']=toTitleCase(parts[0]);
+            if (!r['lastname'])  r['lastname'] =toTitleCase(parts.slice(1).join(' '));
+          } else {
+            if (!r['firstname']) r['firstname']=toTitleCase(fullName);
+          }
+          r._mapped['firstname']=true;
+          r._mapped['lastname']=true;
+        }
+        return;
+      }
+      r[t]=String(val||'').trim();
+    });
+    const addrParts=[r['address']||''];
+    addr2.forEach(h=>{const hi=headers.indexOf(h);const v=String(row[hi]||'').trim();if(v)addrParts.push(v);});
+    const addr=addrParts.filter(Boolean).join(', ');
+    if (addr) r['address']=formatAddress(addr);
+    if (r.firstname) r.firstname=toTitleCase(r.firstname);
+    if (r.lastname)  r.lastname=toTitleCase(r.lastname);
+    if (r['Phone (campaign)']) {
+      const orig=r['Phone (campaign)'];
+      r['Phone (campaign)']=cleanPhone(orig);
+      if (r['Phone (campaign)']!==orig) { phones++; r._mapped['Phone (campaign)']=true; }
+    }
+    if (r['Email']) r['Email']=fixEmailTypos(r['Email']);
+    // Country name -> ISO
+    if (r.ionos_country) {
+      const iso=COUNTRY_NAMES[r.ionos_country.toLowerCase().trim()];
+      if (iso) { r._mapped.ionos_country=true; r.ionos_country=iso; }
+      else if (/^[A-Z]{2}$/.test(r.ionos_country)) {}
+    }
+    // Industry
+    if (r.cloud_market_segment) {
+      try {
+        if (!/^\d{2}\./.test(r.cloud_market_segment)) {
+          const raw=r.cloud_market_segment.trim();
+          const mapped=INDUSTRY_MAP[raw.toLowerCase()]||mapIndustryFuzzy(raw);
+          if (mapped) { r._mapped.cloud_market_segment=true; r.cloud_market_segment=mapped; }
+          else r._industryUnknown=true;
+        }
+      } catch(e) {}
+    }
+    // Employee size
+    if (r.numemployees) {
+      const orig=r.numemployees;
+      const parsed=parseEmployeeSize(orig);
+      if (parsed&&parsed!==orig) { r._mapped.numemployees=true; r.numemployees=parsed; }
+    }
+    // Address format
+    if (r['address']) {
+      const m=r['address'].match(/^(\d+)\s+(.+)$/);
+      if (m) r['address']=`${m[2]} ${m[1]}`;
+    }
+    // Normalize hubspot_owner_id: convert name to numeric ID if needed
+    if (r['hubspot_owner_id']) {
+      const ownerVal = String(r['hubspot_owner_id']).trim();
+      if (!/^\d+$/.test(ownerVal)) {
+        // Not a number - try to look up by name
+        const ownerKey = ownerVal.toLowerCase();
+        const resolvedId = OWNER_NAME_MAP[ownerKey];
+        if (resolvedId) {
+          r['hubspot_owner_id'] = resolvedId;
+          r._mapped['hubspot_owner_id'] = true;
+        }
+        // If not found, leave as-is (will fail in HubSpot upload)
+      }
+    }
+
+    // Normalize restricted fields
+    try {
+      if (r['event_participation']) r['event_participation']=normalizeParticipation(r['event_participation']);
+      if (r['Event Nurturing']) r['Event Nurturing']=normalizeNurturing(r['Event Nurturing']);
+      if (r['cloud_confirmed_opt_in_location (Form)']) r['cloud_confirmed_opt_in_location (Form)']=normalizeOIForm(r['cloud_confirmed_opt_in_location (Form)']);
+      if (r['consent_to_marketing_subscription']) {
+        const cv=String(r['consent_to_marketing_subscription']).trim().toLowerCase();
+        r['consent_to_marketing_subscription']=(cv==='true'||cv==='yes'||cv==='1'||cv==='ja')?'TRUE':'';
+      }
+      if (r['ionos_score_for_imported_leads']) r['ionos_score_for_imported_leads']=normalizeScore(r['ionos_score_for_imported_leads']);
+    } catch(e) { console.warn('normalize error',e); }
+    // Country -> subsidiary + language
+    if (r.ionos_country&&COUNTRY_RULES[r.ionos_country]) {
+      const rule=COUNTRY_RULES[r.ionos_country];
+      if (!r.subsidairy) { r.subsidairy=rule.sub; r._auto.subsidairy=true; }
+      if (!r.first_conversion_language) { r.first_conversion_language=rule.lang; r._auto.first_conversion_language=true; }
+    }
+    // Dates - respect skip-doi checkbox
+    const _skipDoi = document.getElementById('skip-doi') && document.getElementById('skip-doi').checked;
+    if (r.recently_requested_content_date) r.recently_requested_content_date=cleanDate(r.recently_requested_content_date);
+    const d1=r.recently_requested_content_date||'';
+    r.recently_requested_content_date=d1||todayStr();
+    if (!d1) r._auto.recently_requested_content_date=true;
+    if (_skipDoi) {
+      r.cloud_confirmed_opt_in_date='';
+      r.confirmed_opt_in_location_wf='';
+      r['cloud_confirmed_opt_in_location (Form)']='';
+    } else {
+      if (r.cloud_confirmed_opt_in_date) r.cloud_confirmed_opt_in_date=cleanDate(r.cloud_confirmed_opt_in_date);
+      const d2=r.cloud_confirmed_opt_in_date||'';
+      r.cloud_confirmed_opt_in_date=d1||d2||todayStr();
+      if (!d2) r._auto.cloud_confirmed_opt_in_date=true;
+    }
+    // Blacklist check
+    if (r.ionos_country&&BLACKLIST.has(r.ionos_country.toUpperCase())) r._blacklisted=true;
+    // If no country, fall back to event country
+    if (!r.ionos_country&&!r._blacklisted) {
+      const evCtry=document.getElementById('ev-ctry').value;
+      if (evCtry&&COUNTRY_RULES[evCtry]) {
+        r.ionos_country=evCtry; r._auto.ionos_country=true;
+        if (!r.subsidairy) { r.subsidairy=COUNTRY_RULES[evCtry].sub; r._auto.subsidairy=true; }
+        if (!r.first_conversion_language) { r.first_conversion_language=COUNTRY_RULES[evCtry].lang; r._auto.first_conversion_language=true; }
+      }
+    }
+    // Final fallback: country/subsidiary/language must NEVER be empty -> default DE/DE/de-de
+    if (!r.ionos_country) { r.ionos_country='DE'; r._auto.ionos_country=true; }
+    if (!r.subsidairy)    { r.subsidairy='DE';    r._auto.subsidairy=true; }
+    if (!r.first_conversion_language) { r.first_conversion_language='de-de'; r._auto.first_conversion_language=true; }
+    // Email dedup
+    const email=(r['Email']||'').toLowerCase().trim().replace(/\s+/g,'');
+    if (!email) r._noEmail=true;
+    else if (seen.has(email)) r._dup=true;
+    else seen.add(email);
+    records.push(r);
+  });
+  records._phonesFixed=phones;
+  cleanedData=records.filter(r=>!r._dup&&!r._noEmail&&!r._blacklisted);
+}
+
+// -- AI -----------------------------------------------------------------------
+async function runAI(recs) {
+  const PHONE_PFXS={'44':'GB','49':'DE','43':'AT','41':'CH','33':'FR','34':'ES',
+    '39':'IT','52':'MX','351':'PT','31':'NL','32':'BE','48':'PL','356':'MT','55':'BR','61':'AU'};
+  const EMAIL_DOMAINS={'.de':'DE','.at':'AT','.ch':'CH','.co.uk':'GB','.uk':'GB',
+    '.fr':'FR','.es':'ES','.it':'IT','.mx':'MX','.nl':'NL','.be':'BE','.pt':'PT',
+    '.pl':'PL','.se':'SE','.dk':'DK','.no':'NO','.fi':'FI','.ie':'IE','.au':'AU',
+    '.ca':'CA','.us':'US','.br':'BR','.jp':'JP','.sg':'SG'};
+  const stillNeeds=recs.filter(r=>{
+    if (r.ionos_country&&r.subsidairy&&r.first_conversion_language) return false;
+    const ph=(r['Phone (campaign)']||'').replace(/\D/g,'');
+    for (const [pfx,iso] of Object.entries(PHONE_PFXS)) {
+      if (ph.length>6&&ph.startsWith(pfx)&&COUNTRY_RULES[iso]) {
+        if (!r.ionos_country) r.ionos_country=iso;
+        if (!r.subsidairy) r.subsidairy=COUNTRY_RULES[iso].sub;
+        if (!r.first_conversion_language) r.first_conversion_language=COUNTRY_RULES[iso].lang;
+        return false;
+      }
+    }
+    const email=(r['Email']||'').toLowerCase();
+    for (const [domain,iso] of Object.entries(EMAIL_DOMAINS)) {
+      if (email.endsWith(domain)&&COUNTRY_RULES[iso]) {
+        if (!r.ionos_country) r.ionos_country=iso;
+        if (!r.subsidairy) r.subsidairy=COUNTRY_RULES[iso].sub;
+        if (!r.first_conversion_language) r.first_conversion_language=COUNTRY_RULES[iso].lang;
+        return false;
+      }
+    }
+    const evCtry=document.getElementById('ev-ctry').value;
+    if (evCtry&&COUNTRY_RULES[evCtry]) {
+      if (!r.ionos_country) r.ionos_country=evCtry;
+      if (!r.subsidairy) r.subsidairy=COUNTRY_RULES[evCtry].sub;
+      if (!r.first_conversion_language) r.first_conversion_language=COUNTRY_RULES[evCtry].lang;
+      return false;
+    }
+    return true;
+  });
+  if (stillNeeds.length===0) return;
+  if (stillNeeds.length>50) {
+    const evCtry=document.getElementById('ev-ctry').value||'DE';
+    stillNeeds.forEach(r=>{
+      if (!r.ionos_country) r.ionos_country=evCtry;
+      if (COUNTRY_RULES[evCtry]) {
+        if (!r.subsidairy) r.subsidairy=COUNTRY_RULES[evCtry].sub;
+        if (!r.first_conversion_language) r.first_conversion_language=COUNTRY_RULES[evCtry].lang;
+      }
+    });
+    return;
+  }
+}
+
+async function classifyIndustries(recs) {
+  const VALID=['01. Technology Services','02. Manufacturing','03. Publishing / Media',
+    '04. Retail / Portal','05. Finance / Insurance','06. Non-IT-Service Provider',
+    '07. Telco / ISP','08. Utilities','09. Transport / Logistics',
+    '10. Edu / University/ Research','11. Public Sector','12. Private'];
+  const uniqueVals=[...new Set(recs.map(r=>r.cloud_market_segment).filter(Boolean))].slice(0,30);
+  const bar=document.getElementById('ai-bar');
+  bar.style.display='flex';
+  document.getElementById('ai-msg').textContent=`AI classifying ${recs.length} industry values...`;
+  const prompt=`Map each industry to the closest category. Return ONLY JSON object.
+Categories: 01.Technology Services, 02.Manufacturing, 03.Publishing/Media, 04.Retail/Portal, 05.Finance/Insurance, 06.Non-IT-Service Provider, 07.Telco/ISP, 08.Utilities, 09.Transport/Logistics, 10.Edu/Research, 11.Public Sector, 12.Private
+Values: ${JSON.stringify(uniqueVals)}
+Return: {"value":"01. Technology Services"}`;
+  try {
+    recs.forEach(r=>{ r.cloud_market_segment='06. Non-IT-Service Provider'; r._mapped.cloud_market_segment=true; delete r._industryUnknown; });
+  } catch(e) {}
+  setTimeout(()=>{ bar.style.display='none'; },2000);
+}
+
+// -- Render stats -------------------------------------------------------------
+function renderStats() {
+  const dups=records.filter(r=>r._dup).length;
+  const noEmail=records.filter(r=>r._noEmail).length;
+  const blisted=records.filter(r=>r._blacklisted);
+  document.getElementById('st-total').textContent=records.length;
+  document.getElementById('st-export').textContent=cleanedData.length;
+  document.getElementById('st-dups').textContent=dups+(blisted.length?' (+'+blisted.length+' [blocked])':'');
+  document.getElementById('st-noemail').textContent=noEmail;
+  document.getElementById('st-phones').textContent=records._phonesFixed||0;
+}
+
+// -- Render issues -------------------------------------------------------------
+function renderIssues() {
+  const ev=getEventConfig();
+  const dups=records.filter(r=>r._dup);
+  const noEmail=records.filter(r=>r._noEmail);
+  const blisted=records.filter(r=>r._blacklisted);
+  const parts=[];
+  if (blisted.length>0) {
+    var bRows = blisted.map(function(r){return '<span style="display:inline-block;margin:2px 4px;padding:2px 8px;background:var(--red-lt);border-radius:4px;font-size:11px;">'+(r['Email']||'?')+' ('+r.ionos_country+')</span>';}).join('');
+    parts.push('<div class="alert a-err"><b>[blocked] '+blisted.length+' lead'+(blisted.length>1?'s':'')+' removed - blacklisted country.</b><div style="margin-top:6px;max-height:150px;overflow-y:auto;">'+bRows+'</div></div>');
+  }
+  if (dups.length>0) {
+    var dupRows = dups.map(function(r){return '<span style="display:inline-block;margin:2px 4px;padding:2px 8px;background:#fef3c7;border-radius:4px;font-size:11px;">'+r['Email']+'</span>';}).join('');
+    parts.push('<div class="alert a-warn"><b>(!) '+dups.length+' duplicate email'+(dups.length>1?'s':'')+' removed.</b><div style="margin-top:6px;max-height:150px;overflow-y:auto;">'+dupRows+'</div></div>');
+  }
+  if (noEmail.length>0) parts.push('<div class="alert a-err"><b>X ' + (noEmail.length) + ' rows skipped - no email.</b></div>');
+  if (!ev.owner) parts.push('<div class="alert a-warn"><b>(!) hubspot_owner_id is empty.</b></div>');
+  if (!ev.itcCamp) parts.push('<div class="alert a-warn"><b>(!) itc_campaign is empty.</b></div>');
+  if (parts.length===0) parts.push('<div class="alert a-ok">OK All rows processed cleanly.</div>');
+  document.getElementById('issues-container').innerHTML=parts.join('');
+}
+
+// -- Render preview ---------------------------------------------------------
+function renderPreview() {
+  const table=document.getElementById('preview-table');
+  if (!table) return;
+  const ev=getEventConfig();
+  const colsToShow=OUT_COLS.filter(c=>{
+    if (MANDATORY.has(c)) return true;
+    if (records.some(r=>r[c]&&String(r[c]).trim()!=='')) return true;
+    if (getEvField(ev,c)) return true;
+    return false;
+  });
+  const isMand=c=>MANDATORY.has(c);
+  var theadCells = '';
+  colsToShow.forEach(function(c) {
+    theadCells += '<th class="'+(isMand(c)?'req':'')+'">'+c+(isMand(c)?'*':'')+'</th>';
+  });
+  var thead = '<thead><tr>'+theadCells+'</tr></thead>';
+  const rows=records.filter(r=>!r._dup&&!r._noEmail&&!r._blacklisted).map(r=>{
+    const cells=colsToShow.map(c=>{
+      let v=r[c]||''; let cls='';
+      const evVal=getEvField(ev,c);
+      if (!v&&evVal) { v=evVal; cls='c-auto'; }
+      else if (r._auto&&r._auto[c]) cls='c-auto';
+      else if (r._mapped&&r._mapped[c]) cls='c-map';
+      if (!v&&isMand(c)) return '<td class="c-miss">X missing</td>';
+      if (!v) return '<td class="c-empty">-</td>';
+      return '<td class="' + (cls) + '" title="' + (v) + '">' + (v) + '</td>';
+    }).join('');
+    return '<tr>' + (cells) + '</tr>';
+  }).join('');
+  table.innerHTML=thead+'<tbody>' + (rows) + '</tbody>';
+  document.getElementById('prev-badge').textContent=`${cleanedData.length} rows . ${cleanedData.length} will export`;
+}
+
+function getEvField(ev,field) {
+  const m={
+    'ionos_recently_requested_content_label':ev.label,
+    'recently_requested_content_url':ev.url,
+    'lead_source_ext':ev.lse,'acquisition_method_ext_new':ev.amen,
+    'utm_campaign':ev.utm,'itc_channel':ev.itcCh,'itc_campaign':ev.itcCamp,
+    'itc_product':'HUKYUQ','confirmed_opt_in_location_wf':ev.doiLoc,
+    'salesforce_status':ev.sf,'ionos_source':ev.src,'acquisition_method':ev.acqm,
+    'hubspot_owner_id':ev.owner,'interested_in_product_area':'Cloud',
+    'ionos_score_for_imported_leads':ev.score||undefined,
+    'event_participation':ev.part||undefined,
+  };
+  return m[field]||'';
+}
+
+function getEventConfig() {
+  return {
+    label:document.getElementById('gen-label').value,
+    url:document.getElementById('ev-url').value,
+    lse:document.getElementById('gen-lse').value,
+    amen:document.getElementById('gen-amen').value,
+    utm:(document.getElementById('gen-utm')?document.getElementById('gen-utm').value:''),
+    itcCh:document.getElementById('ev-itc-ch').value,
+    itcCamp:document.getElementById('ev-itc-camp').value.trim(),
+    sf:document.getElementById('ev-sf').value,
+    src:document.getElementById('ev-src').value,
+    acqm:document.getElementById('ev-acqm').value,
+    doiLoc:document.getElementById('skip-doi')&&document.getElementById('skip-doi').checked?'':document.getElementById('ev-doi-loc').value,
+    skipDoi:document.getElementById('skip-doi')&&document.getElementById('skip-doi').checked,
+    owner:document.getElementById('ev-owner').value||'',
+    score:document.getElementById('ev-score').value,
+    part:document.getElementById('ev-part').value,
+  };
+}
+
+function checkExportReady() {
+  const ev=getEventConfig();
+  const btn=document.getElementById('btn-export');
+  const msg=document.getElementById('export-block-msg');
+  const missing=[];
+  if (!ev.itcCamp) missing.push('itc_campaign');
+  if (missing.length>0) { btn.disabled=true; msg.textContent=`Fill required: ${missing.join(', ')}`; }
+  else { btn.disabled=false; msg.textContent=''; }
+}
+
+// -- Export --------------------------------------------------------------------
+document.getElementById('btn-export').addEventListener('click',()=>{
+  const ev=getEventConfig();
+  const fullRows=cleanedData.map(r=>{
+    const out={...r};
+    const defs={
+      'ionos_recently_requested_content_label':ev.label,
+      'recently_requested_content_url':ev.url,
+      'lead_source_ext':ev.lse,'acquisition_method_ext_new':ev.amen,
+      'utm_campaign':ev.utm,'itc_channel':ev.itcCh,'itc_campaign':ev.itcCamp,
+      'itc_product':'HUKYUQ','confirmed_opt_in_location_wf':ev.doiLoc,
+      'salesforce_status':ev.sf,'ionos_source':ev.src,'acquisition_method':ev.acqm,
+      'hubspot_owner_id':ev.owner,'interested_in_product_area':'Cloud',
+    };
+    if (ev.score&&!out['ionos_score_for_imported_leads']) out['ionos_score_for_imported_leads']=ev.score;
+    if (ev.part&&!out['event_participation']) out['event_participation']=ev.part;
+    Object.entries(defs).forEach(([k,v])=>{ if(v) out[k]=v; });
+    return out;
+  });
+  const exportCols=OUT_COLS.filter(c=>{
+    if (ev.skipDoi && (c==='cloud_confirmed_opt_in_date'||c==='confirmed_opt_in_location_wf'||c==='cloud_confirmed_opt_in_location (Form)')) return false;
+    return fullRows.some(out=>out[c]&&String(out[c]).trim()!=='');
+  });
+  const rows=fullRows.map(out=>exportCols.map(c=>out[c]||''));
+  // CSV
+  const csv=[exportCols,...rows].map(row=>row.map(v=>{const s=String(v||'');return s.includes(',')||s.includes('"')||s.includes('\n')?`"${s.replace(/"/g,'""')}"`:s;}).join(',')).join('\n');
+  const csvBlob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const csvLink=document.createElement('a');
+  csvLink.href=URL.createObjectURL(csvBlob);
+  csvLink.download=`HubSpot_Leads_${todayStr()}.csv`;
+  csvLink.click();
+  // XLSX
+  setTimeout(()=>{
+    const wb=XLSX.utils.book_new();
+    const ws=XLSX.utils.aoa_to_sheet([exportCols,...rows]);
+    ws['!cols']=exportCols.map(c=>({wch:Math.max(c.length+4,16)}));
+    XLSX.utils.book_append_sheet(wb,ws,'No DOI mail');
+    XLSX.writeFile(wb,`HubSpot_Leads_${todayStr()}.xlsx`);
+  },500);
+  toast(`OK ${cleanedData.length} leads exported!`);
+  // Move to step 5
+  setTimeout(()=>{ prepareHubSpotStep(); checkCorsWarning(); showStep(5); }, 800);
+});
+
+// -- HubSpot upload ----------------------------------------------------------
+const DO_NOT_OVERWRITE = new Set([
+  'hubspot_owner_id','ionos_source','lead_source_ext',
+  'acquisition_method','acquisition_method_ext_new',
+  'ionos_country','subsidairy','first_conversion_language'
+]);
+
+function checkCorsWarning() {
+  // Show warning if running from file:// protocol
+  if (window.location.protocol === 'file:') {
+    document.getElementById('hs-cors-warning').style.display = 'block';
+  }
+}
+
+function resetConnectionTest() {
+  document.getElementById('hs-test-result').textContent = '';
+}
+
+async function testHubSpotConnection() {
+  const apiKey = document.getElementById('hs-api-key').value.trim();
+  const el = document.getElementById('hs-test-result');
+  if (!apiKey) { el.textContent = '(!) Enter your token first'; el.style.color = 'var(--amber)'; return; }
+  el.textContent = 'Testing...'; el.style.color = 'var(--muted)';
+  try {
+    const useProxy = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const useCorsProxy = !useProxy && window.location.hostname.includes('github.io');
+    const hsUrl = 'https://api.hubapi.com/crm/v3/objects/contacts?limit=1&properties=email';
+    const testUrl = useProxy 
+      ? '/hs-proxy/crm/v3/objects/contacts?limit=1&properties=email' 
+      : useCorsProxy 
+        ? `https://corsproxy.io/?url=${encodeURIComponent(hsUrl)}`
+        : hsUrl;
+    const testHeaders = useProxy ? { 'X-HS-Token': apiKey } : { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' };
+    const resp = await fetch(testUrl, { headers: testHeaders });
+    const data = await resp.json();
+    if (resp.ok) {
+      el.textContent = 'OK Connected! Token is valid.';
+      el.style.color = 'var(--green)';
+    } else if (resp.status === 401) {
+      el.textContent = 'X Unauthorized - token invalid or expired';
+      el.style.color = 'var(--red)';
+    } else if (resp.status === 403) {
+      el.innerHTML = 'X Missing scopes - add <b>crm.objects.contacts.read</b> to your Private App';
+      el.style.color = 'var(--red)';
+    } else {
+      el.textContent = `X Error ${resp.status}: ${data.message || JSON.stringify(data)}`;
+      el.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    if (window.location.protocol === 'file:') {
+      el.textContent = 'X CORS blocked - serve via local server (see warning above)';
+    } else {
+      // Try alternative endpoint to narrow down the issue
+      try {
+        const resp2 = await fetch(useProxy ? '/hs-proxy/integrations/v1/me' : 'https://api.hubapi.com/integrations/v1/me', { headers: testHeaders });
+        if (resp2.ok) {
+          el.textContent = 'OK Token valid but contacts endpoint unreachable - check scopes';
+          el.style.color = 'var(--amber)';
+        } else {
+          el.textContent = `X Token invalid (${resp2.status})`;
+          el.style.color = 'var(--red)';
+        }
+      } catch(e2) {
+        el.textContent = 'X Network error - check internet connection: ' + e.message;
+        el.style.color = 'var(--red)';
+      }
+    }
+  }
+}
+
+function prepareHubSpotStep() {
+  // Load saved token from localStorage
+  var tokenEl = document.getElementById('hs-api-key');
+  if (tokenEl && !tokenEl.value) {
+    var saved = localStorage.getItem('lf_hs_token');
+    if (saved) tokenEl.value = saved;
+  }
+  const ev = getEventConfig();
+  const dd = String(new Date().getDate()).padStart(2,'0');
+  const mm = String(new Date().getMonth()+1).padStart(2,'0');
+  const yyyy = new Date().getFullYear();
+  const today = `${dd}${mm}${yyyy}`;
+  const src = ev.src||'GEN';
+  const prefix = src==='Webinar'?'WBN':src==='Event'?'EVT':src==='Conference'?'EVT':src.slice(0,3).toUpperCase();
+  const ctry = document.getElementById('ev-ctry').value||'DE';
+  const rule = COUNTRY_RULES[ctry];
+  // Language: first part of lang code uppercased (de-de -> DE, en-uk -> EN etc)
+  const langCode = rule ? rule.lang.split('-')[0].toUpperCase() : 'DE';
+  const evName = (document.getElementById('ev-name').value||'Event').trim().toUpperCase();
+  // Format: CLOUD-{country}-{language}-{type}-{name}-LeadUpload-{date}
+  const autoName = 'CLOUD-'+ctry+'-'+langCode+'-'+prefix+'-'+evName+'-LeadUpload-'+today;
+  document.getElementById('hs-import-name').value = autoName;
+  document.getElementById('hs-filename') && (document.getElementById('hs-filename').textContent = `HubSpot_Leads_${todayStr()}.csv`);
+  document.getElementById('hs-contact-count') && (document.getElementById('hs-contact-count').textContent = `${cleanedData.length} contacts`);
+}
+
+function log(msg, color='var(--muted)') {
+  const el = document.getElementById('hs-log');
+  if (!el) return;
+  el.innerHTML += '<div style="color:' + (color) + '">' + (new Date().toLocaleTimeString()) + ' - ' + (msg) + '</div>';
+  el.scrollTop = el.scrollHeight;
+}
+
+async function startHubSpotUpload() {
+  const apiKey = document.getElementById('hs-api-key').value.trim();
+  const listName = document.getElementById('hs-import-name').value.trim();
+
+  if (!apiKey) { toast('Enter your HubSpot Private App token first.'); return; }
+  if (!apiKey.startsWith('pat-')) { toast('Token should start with pat-eu1- or pat-na1-'); return; }
+  if (cleanedData.length === 0) { toast('No contacts to upload.'); return; }
+
+  // Show progress UI
+  document.getElementById('hs-api-section').style.display = 'none';
+  document.getElementById('hs-progress-section').style.display = 'block';
+
+  const ev = getEventConfig();
+  // Use local proxy if running on localhost (avoids corporate firewall issues)
+  const USE_PROXY = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  // On GitHub Pages: route through corsproxy.io to bypass CORS
+  const USE_CORS_PROXY = !USE_PROXY && window.location.hostname.includes('github.io');
+  const HEADERS = USE_PROXY
+    ? { 'Content-Type':'application/json', 'X-HS-Token': apiKey }
+    : { 'Content-Type':'application/json', 'Authorization':`Bearer ${apiKey}` };
+  const API = (path) => {
+    if (USE_PROXY) return `/hs-proxy${path}`;
+    if (USE_CORS_PROXY) return `https://corsproxy.io/?url=${encodeURIComponent('https://api.hubapi.com' + path)}`;
+    return `https://api.hubapi.com${path}`;
+  };
+
+  let created = 0, updated = 0, errors = 0;
+  const contactIds = [];
+
+  // Build full contact records
+  const allContacts = cleanedData.map(r => {
+    const out = {...r};
+    const defs = {
+      'ionos_recently_requested_content_label': ev.label,
+      'recently_requested_content_url': ev.url,
+      'lead_source_ext': ev.lse,
+      'acquisition_method_ext_new': ev.amen,
+      'utm_campaign': ev.utm,
+      'itc_channel': ev.itcCh,
+      'itc_campaign': ev.itcCamp,
+      'itc_product': 'HUKYUQ',
+      'confirmed_opt_in_location_wf': ev.doiLoc,
+      'salesforce_status': ev.sf,
+      'ionos_source': ev.src,
+      'acquisition_method': ev.acqm,
+      'hubspot_owner_id': ev.owner,
+      'interested_in_product_area': 'Cloud',
+    };
+    if (ev.score && !out['ionos_score_for_imported_leads']) out['ionos_score_for_imported_leads'] = ev.score;
+    if (ev.part && !out['event_participation']) out['event_participation'] = ev.part;
+    // If skip-doi, clear opt-in date fields
+    if (ev.skipDoi) {
+      out['cloud_confirmed_opt_in_date'] = '';
+      out['confirmed_opt_in_location_wf'] = '';
+      out['cloud_confirmed_opt_in_location (Form)'] = '';
+    }
+    // Apply event defaults only if row doesn't already have a value
+    Object.entries(defs).forEach(([k,v]) => {
+      if (v && !out[k]) out[k] = v;  // row value takes priority
+    });
+    return out;
+  });
+
+  // Step 1: Process in batches of 100
+  const BATCH = 100;
+  const total = allContacts.length;
+  document.getElementById('hs-progress-count').textContent = `0 / ${total}`;
+
+  log(`Starting upload of ${total} contacts in batches of ${BATCH}...`);
+
+  for (let i = 0; i < total; i += BATCH) {
+    const batch = allContacts.slice(i, i + BATCH);
+    const pct = Math.round((i / total) * 90);
+    document.getElementById('hs-progress-bar').style.width = pct + '%';
+    document.getElementById('hs-progress-count').textContent = `${Math.min(i + BATCH, total)} / ${total}`;
+    document.getElementById('hs-progress-label').textContent = `Uploading contacts... batch ${Math.floor(i/BATCH)+1}/${Math.ceil(total/BATCH)}`;
+
+    // Build upsert payload - check existing contacts first to handle do-not-overwrite
+    // HubSpot property name mapping - all must be lowercase
+    const HS_PROP_MAP = {
+      'Email': 'email',
+      'Phone (campaign)': 'phone',
+      'Company': 'company',
+      'Event Nurturing': 'event_nurturing',
+      'meeting info': 'meeting_info',
+      'cloud_confirmed_opt_in_location (Form)': 'cloud_confirmed_opt_in_location',
+    };
+    const inputs = batch.map(r => {
+      const props = {};
+      OUT_COLS.forEach(col => {
+        const v = r[col];
+        if (!v || String(v).trim() === '') return;
+        const hsName = HS_PROP_MAP[col] || col.toLowerCase().replace(/[^a-z0-9_]/g, '_');
+        props[hsName] = String(v).trim();
+      });
+      return { properties: props };
+    });
+
+    try {
+      // Use batch upsert - creates new, skips existing (we handle overwrite via separate update)
+      const resp = await fetch(API('/crm/v3/objects/contacts/batch/upsert'), {
+        method: 'POST',
+        headers: HEADERS,
+        body: JSON.stringify({
+          inputs: inputs.map((inp, idx) => ({
+            idProperty: 'email',
+            id: batch[idx]['Email'],
+            properties: inp.properties
+          }))
+        })
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json();
+        log(`Batch ${Math.floor(i/BATCH)+1} error: ${err.message||resp.status}`, 'var(--red)');
+        errors += batch.length;
+        continue;
+      }
+
+      const data = await resp.json();
+      data.results && data.results.forEach(function(res) {
+        if (res.id) contactIds.push(parseInt(res.id));
+        // Check if newly created or updated
+        if (res.properties && res.properties.hs_object_source === 'IMPORT' || !res.properties && res.properties.createdate) created++;
+        else updated++;
+      });
+      // If results empty but no errors, count as updated
+      if ((!data.results || !data.results.length) && (!data.errors || !data.errors.length)) updated += batch.length;
+
+      log(`Batch ${Math.floor(i/BATCH)+1}: ${(data.results?data.results.length:0)} contacts processed OK`, 'var(--green)');
+    } catch(e) {
+      log(`Batch ${Math.floor(i/BATCH)+1} failed: ${e.message}`, 'var(--red)');
+      errors += batch.length;
+    }
+
+    // Small delay between batches to avoid rate limiting
+    if (i + BATCH < total) await new Promise(r => setTimeout(r, 200));
+  }
+
+  // Step 2: Create static list (segment) - reuse if name already exists
+  let listId = null;
+  document.getElementById('hs-progress-bar').style.width = '92%';
+  document.getElementById('hs-progress-label').textContent = 'Creating segment...';
+  log('Creating segment: ' + listName + '...');
+  try {
+    const listResp = await fetch(API('/crm/v3/lists'), {
+      method: 'POST', headers: HEADERS,
+      body: JSON.stringify({ name: listName, objectTypeId: '0-1', processingType: 'MANUAL' })
+    });
+    const d = await listResp.json();
+    if (listResp.ok) {
+      listId = (d.list && d.list.listId) || d.listId || d.id;
+      log('OK Segment created: "' + listName + '" (ID: ' + listId + ')', 'var(--green)');
+    } else {
+      const alreadyExists = d.message && d.message.toLowerCase().indexOf('already exist') !== -1;
+      if (alreadyExists) {
+        // Search for existing segment by name
+        log('Segment already exists - finding it...', '');
+        const searchResp = await fetch(API('/crm/v3/lists/search'), {
+          method: 'POST', headers: HEADERS,
+          body: JSON.stringify({ query: listName, processingTypes: ['MANUAL'], objectTypeId: '0-1' })
+        });
+        if (searchResp.ok) {
+          const sd = await searchResp.json();
+          const match = (sd.lists || []).find(function(l) { return l.name === listName; });
+          if (match) {
+            listId = match.listId || match.id;
+            log('OK Found existing segment (ID: ' + listId + ')', 'var(--green)');
+          }
+        }
+        if (!listId) {
+          // Create with unique name
+          const uniqueName = listName + ' (' + new Date().toLocaleTimeString() + ')';
+          const r2 = await fetch(API('/crm/v3/lists'), {
+            method: 'POST', headers: HEADERS,
+            body: JSON.stringify({ name: uniqueName, objectTypeId: '0-1', processingType: 'MANUAL' })
+          });
+          if (r2.ok) {
+            const d2 = await r2.json();
+            listId = d2.listId || d2.id;
+            log('OK Segment created: "' + uniqueName + '" (ID: ' + listId + ')', 'var(--green)');
+          }
+        }
+      } else {
+        log('(!) Segment creation failed: ' + (d.message || listResp.status), 'var(--amber)');
+      }
+    }
+  } catch(e) { log('(!) Segment error: ' + e.message, 'var(--amber)'); }
+
+    // Step 3: Add contacts to segment by looking up their IDs via email
+  if (listId && allContacts.length > 0) {
+    document.getElementById('hs-progress-label').textContent = 'Adding contacts to segment...';
+    document.getElementById('hs-progress-bar').style.width = '96%';
+    const emails = allContacts.map(function(r) { return r['Email'] || ''; }).filter(Boolean);
+    log('Looking up ' + emails.length + ' contacts by email...');
+    try {
+      const vids = [];
+      for (var ci = 0; ci < emails.length; ci += 100) {
+        const chunk = emails.slice(ci, ci + 100);
+        const batchResp = await fetch(API('/crm/v3/objects/contacts/batch/read'), {
+          method: 'POST', headers: HEADERS,
+          body: JSON.stringify({
+            idProperty: 'email',
+            inputs: chunk.map(function(e) { return { id: e }; }),
+            properties: ['email']
+          })
+        });
+        if (batchResp.ok) {
+          const bd = await batchResp.json();
+          if (bd.results) bd.results.forEach(function(r) { if (r.id) vids.push(String(r.id)); });
+        }
+        await new Promise(function(r) { setTimeout(r, 200); });
+      }
+      log('Found ' + vids.length + ' contact IDs (new + existing) - adding to segment...');
+      if (vids.length > 0) {
+        for (var vi = 0; vi < vids.length; vi += 500) {
+          const chunk = vids.slice(vi, vi + 500);
+          const addResp = await fetch(API('/crm/v3/lists/' + listId + '/memberships/add'), {
+            method: 'PUT', headers: HEADERS,
+            body: JSON.stringify(chunk.map(function(id) { return String(id); }))
+          });
+          if (addResp.ok) log('OK ' + vids.length + ' contacts added to segment', 'var(--green)');
+          else {
+            const ae = await addResp.json();
+            log('(!) Add failed: ' + (ae.message || addResp.status), 'var(--amber)');
+          }
+        }
+      }
+    } catch(e) { log('(!) Segment add error: ' + e.message, 'var(--amber)'); }
+  }
+    // Done
+  document.getElementById('hs-progress-bar').style.width = '100%';
+  document.getElementById('hs-progress-label').textContent = 'Upload complete!';
+
+  var resultHtml = '<div class="alert '+(errors===0?'a-ok':'a-warn')+'" style="margin-top:20px">'
+    +'<b>'+(errors===0?'OK Upload complete!':'(!) Upload completed with errors')+'</b><br>'
+    +'<span style="font-family:var(--mono);font-size:12px">'
+    +created+' new contacts created . '
+    +updated+' existing contacts updated . '
+    +(errors>0?'<span style="color:var(--red)">'+errors+' failed</span> . ':'')
+    +(listId?'Segment "<b>'+listName+'</b>" created with '+contactIds.length+' contacts':'(!) Segment creation failed - contacts were uploaded to HubSpot')
+    +'</span></div>'
+    +(listId?'<div style="display:flex;gap:10px;margin-top:12px">'
+      +'<a href="https://app-eu1.hubspot.com/contacts/8230984/objectLists/'+listId+'" target="_blank" class="btn btn-ghost btn-sm">View Segment in HubSpot -></a>'
+      +'<a href="https://app-eu1.hubspot.com/contacts/8230984" target="_blank" class="btn btn-ghost btn-sm">View All Contacts -></a>'
+      +'</div>':'');
+  document.getElementById('hs-result-section').style.display = 'block';
+  document.getElementById('hs-result-section').innerHTML = resultHtml;
+  toast('OK '+(created+updated)+' contacts uploaded!');
+}
+
+function downloadForHubSpot() {
+  const ev = getEventConfig();
+  const importName = document.getElementById('hs-import-name').value || `HubSpot_Leads_${todayStr()}`;
+  const fullRows = cleanedData.map(r => {
+    const out = {...r};
+    const defs = {
+      'ionos_recently_requested_content_label': ev.label,
+      'recently_requested_content_url': ev.url,
+      'lead_source_ext': ev.lse, 'acquisition_method_ext_new': ev.amen,
+      'utm_campaign': ev.utm, 'itc_channel': ev.itcCh, 'itc_campaign': ev.itcCamp,
+      'itc_product': 'HUKYUQ',
+      'confirmed_opt_in_location_wf': ev.skipDoi ? '' : ev.doiLoc,
+      'salesforce_status': ev.sf, 'ionos_source': ev.src, 'acquisition_method': ev.acqm,
+      'hubspot_owner_id': ev.owner, 'interested_in_product_area': 'Cloud',
+    };
+    if (ev.score && !out['ionos_score_for_imported_leads']) out['ionos_score_for_imported_leads'] = ev.score;
+    if (ev.part && !out['event_participation']) out['event_participation'] = ev.part;
+    // If skip-doi, clear opt-in date fields
+    if (ev.skipDoi) {
+      out['cloud_confirmed_opt_in_date'] = '';
+      out['confirmed_opt_in_location_wf'] = '';
+      out['cloud_confirmed_opt_in_location (Form)'] = '';
+    }
+    // Apply event defaults only if row doesn't already have a value
+    Object.entries(defs).forEach(([k,v]) => {
+      if (v && !out[k]) out[k] = v;  // row value takes priority
+    });
+    return out;
+  });
+  const exportCols = OUT_COLS.filter(c => fullRows.some(out => out[c] && String(out[c]).trim() !== ''));
+  const rows = fullRows.map(out => exportCols.map(c => out[c] || ''));
+  const csv = [exportCols, ...rows].map(row => row.map(v => {
+    const s = String(v || '');
+    return s.includes(',') || s.includes('"') || s.includes('\n') ? `"${s.replace(/"/g, '""')}"` : s;
+  }).join(',')).join('\n');
+  const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `${importName}.csv`;
+  link.click();
+  toast('OK Import file downloaded!');
+}
+
+function openHubSpot() {
+  window.open('https://app-eu1.hubspot.com/data-integration-home/8230984/new-import', '_blank');
+}
+
+
+
+
+function filterOwners(query) {
+  const sel = document.getElementById('ev-owner');
+  const q = query.toLowerCase().trim();
+  Array.from(sel.options).forEach(function(opt) {
+    if (opt.value === '') { opt.style.display = ''; return; }
+    opt.style.display = (opt.text.toLowerCase().indexOf(q) !== -1) ? '' : 'none';
+  });
+  // Auto-select if only one visible option left
+  const visible = Array.from(sel.options).filter(function(o) { return o.style.display !== 'none' && o.value; });
+  if (visible.length === 1) sel.value = visible[0].value;
+}
+
+function resetTool() {
+  rawData=[];headers=[];columnMap={};records=[];cleanedData=[];
+  document.getElementById('file-input').value='';
+  document.getElementById('header-file').textContent='No file loaded';
+  var ownerSearch = document.getElementById('ev-owner-search');
+  if (ownerSearch) ownerSearch.value='';
+  showStep(1);
+}
+// -- File input polling ------------------------------------------------------
+(function() {
+  var lastFileName = '';
+  function checkFile() {
+    var fi = document.getElementById('file-input');
+    if (!fi || !fi.files || !fi.files[0]) return;
+    var name = fi.files[0].name;
+    if (name !== lastFileName) {
+      lastFileName = name;
+      handleFile(fi.files[0]);
+    }
+  }
+  setInterval(checkFile, 500);
+})();
+</script>
+</body>
+</html>
